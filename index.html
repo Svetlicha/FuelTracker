@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Fuel Tracker Manual v8 Mobile</title>
+  <title>Fuel Tracker Manual v9 Mobile</title>
   <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6feb">
   <style>
 :root{
@@ -31,8 +31,11 @@ button,input{font:inherit}
 button{cursor:pointer}
 .app-shell{width:min(1220px,calc(100% - 32px));margin:24px auto 40px}
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:26px;border-radius:30px;background:linear-gradient(135deg,#0f172a,#1f6feb 58%,#22c55e);color:#fff;box-shadow:var(--shadow);margin-bottom:18px}
+.hero.compact-hero{position:relative;align-items:center;justify-content:center;min-height:76px;padding:16px 18px;margin-bottom:16px;overflow:visible}
+.hero.compact-hero h1{margin:0;text-align:center;text-transform:uppercase;letter-spacing:.11em;font-size:clamp(22px,4vw,34px);line-height:1;font-weight:1000}
+.hero.compact-hero .hero-actions{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:flex-end}
 .eyebrow{margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;color:#7c8aa5}
-.hero .eyebrow{color:#c8dcff}.hero h1{font-size:clamp(28px,4vw,48px);line-height:1.02;margin:0 0 10px}.hero-text{margin:0;max-width:760px;color:#dbeafe}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.hero .eyebrow{color:#c8dcff}.hero h1{font-size:clamp(28px,4vw,48px);line-height:1.02;margin:0 0 10px}.hero.compact-hero h1{font-size:clamp(22px,4vw,34px);line-height:1;margin:0}.hero-text{margin:0;max-width:760px;color:#dbeafe}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .layout{display:grid;grid-template-columns:minmax(420px,.9fr) minmax(420px,1.1fr);gap:18px;align-items:start}
 .panel{background:rgba(255,255,255,.92);border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px;backdrop-filter:blur(10px)}
 .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}.section-head h2{margin:0;font-size:22px}.section-head.compact{align-items:center}.records-pill,.current-pill{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:#475467;font-weight:700;font-size:13px;white-space:nowrap}.records-pill.sync-on{background:#ecfdf3;color:#027a48;border-color:#abefc6}
@@ -46,29 +49,24 @@ button{cursor:pointer}
 .entries-list{display:grid;gap:10px}.entry-card{border:1px solid var(--line);border-radius:20px;background:#fff;padding:14px}.entry-main{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.entry-date{font-weight:1000;margin-bottom:8px}.entry-meta{display:flex;gap:8px;flex-wrap:wrap;color:#475467;font-weight:800}.fuel-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;font-weight:1000;font-size:12px}.fuel-badge span{display:inline-flex;align-items:center;justify-content:center;min-width:27px;height:21px;border-radius:999px;color:#fff;font-size:11px}.fuel-badge.lpg{background:var(--lpg-soft);color:#027a48}.fuel-badge.lpg span{background:var(--lpg)}.fuel-badge.a95{background:var(--a95-soft);color:#92400e}.fuel-badge.a95 span{background:var(--a95)}.entry-odo{text-align:right;white-space:nowrap}.entry-odo strong{display:block}.entry-odo span{color:#667085;font-weight:800;font-size:13px}.entry-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.row-warning{margin-top:10px;background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:14px;padding:8px 10px;font-weight:800;font-size:13px}.empty-state{display:grid;place-items:center;text-align:center;gap:8px;padding:28px;color:#667085;border:1px dashed #cbd5e1;border-radius:20px}.empty-state strong{color:#344054}.empty-icon{font-size:32px}.data-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .month-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(1220px,calc(100% - 24px));background:rgba(15,23,42,.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;box-shadow:0 18px 60px rgba(15,23,42,.25);z-index:30}.month-nav-title{color:#fff;font-weight:1000;padding:0 4px}.month-rail{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:2px}.month-rail::-webkit-scrollbar{height:0}.month-chip{scroll-snap-align:center;flex:0 0 auto;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#fff;border-radius:16px;padding:9px 13px;font-weight:1000;min-width:92px;text-align:center}.month-chip small{display:block;font-size:10px;font-weight:700;opacity:.7;margin-top:2px}.month-chip.active{background:#fff;color:#0f172a}
 @media (max-width: 980px){.layout{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.overall-grid{grid-template-columns:repeat(2,1fr)}.drive-grid{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.field-grid.two,.field-grid.three{grid-template-columns:1fr}.breakdown{grid-template-columns:1fr}}
-@media (max-width: 640px){body{padding-bottom:104px}.app-shell{width:calc(100% - 20px);margin:10px auto 32px}.hero{border-radius:24px;padding:20px}.hero h1{font-size:29px}.panel{border-radius:22px;padding:16px;margin-bottom:12px}.section-head{gap:10px}.section-head.compact{align-items:flex-start;flex-direction:column}.current-pill,.records-pill{font-size:12px;padding:7px 10px}.stat-grid{grid-template-columns:1fr 1fr;gap:9px}.stat-card{min-height:112px;padding:13px}.stat-card strong{font-size:22px}.fuel-picker{gap:9px}.fuel-option{padding:11px;border-radius:18px}.fuel-option .icon{width:46px;height:46px;border-radius:14px}.button-row .primary,.button-row .ghost,.button-row .danger{flex:1}.calendar-actions,.data-actions{width:100%;justify-content:stretch}.calendar-actions button,.data-actions button,.data-actions label{flex:1}.fuel-calendar{gap:5px}.calendar-weekday{font-size:11px}.calendar-day{min-height:58px;border-radius:13px;padding:6px}.fuel-marker{width:11px;height:11px}.day-detail-stats{gap:7px}.entry-main{flex-direction:column}.entry-odo{text-align:left}.entry-actions{justify-content:stretch}.entry-actions button{flex:1}.month-nav{bottom:8px;width:calc(100% - 16px);grid-template-columns:1fr;padding:9px;border-radius:22px}.month-nav-title{display:none}.month-chip{min-width:82px;padding:9px 10px}.date-picker{position:fixed;left:10px;right:10px;top:90px;width:auto}.picker-day{height:40px}}
+@media (max-width: 640px){body{padding-bottom:104px}.app-shell{width:calc(100% - 20px);margin:10px auto 32px}.hero{border-radius:24px;padding:20px}.hero.compact-hero{min-height:64px;padding:14px 12px}.hero.compact-hero h1{font-size:20px;letter-spacing:.08em}.hero.compact-hero .hero-actions{right:10px}.hero.compact-hero .drive-toggle{padding:8px 9px;border-radius:15px;gap:6px}.hero.compact-hero .drive-toggle .drive-svg{width:24px;height:24px}.hero h1{font-size:29px}.panel{border-radius:22px;padding:16px;margin-bottom:12px}.section-head{gap:10px}.section-head.compact{align-items:flex-start;flex-direction:column}.current-pill,.records-pill{font-size:12px;padding:7px 10px}.stat-grid{grid-template-columns:1fr 1fr;gap:9px}.stat-card{min-height:112px;padding:13px}.stat-card strong{font-size:22px}.fuel-picker{gap:9px}.fuel-option{padding:11px;border-radius:18px}.fuel-option .icon{width:46px;height:46px;border-radius:14px}.button-row .primary,.button-row .ghost,.button-row .danger{flex:1}.calendar-actions,.data-actions{width:100%;justify-content:stretch}.calendar-actions button,.data-actions button,.data-actions label{flex:1}.fuel-calendar{gap:5px}.calendar-weekday{font-size:11px}.calendar-day{min-height:58px;border-radius:13px;padding:6px}.fuel-marker{width:11px;height:11px}.day-detail-stats{gap:7px}.entry-main{flex-direction:column}.entry-odo{text-align:left}.entry-actions{justify-content:stretch}.entry-actions button{flex:1}.month-nav{bottom:8px;width:calc(100% - 16px);grid-template-columns:1fr;padding:9px;border-radius:22px}.month-nav-title{display:none}.month-chip{min-width:82px;padding:9px 10px}.date-picker{position:fixed;left:10px;right:10px;top:90px;width:auto}.picker-day{height:40px}}
 body.mobile .app-shell{max-width:520px}body.mobile .layout{grid-template-columns:1fr}body.mobile .hero{flex-direction:column;align-items:flex-start}body.mobile .field-grid.two,body.mobile .field-grid.three{grid-template-columns:1fr}body.mobile .breakdown,body.mobile .drive-grid{grid-template-columns:1fr}body.mobile .stat-grid,body.mobile .overall-grid{grid-template-columns:1fr 1fr}
 
 .drive-toggle{display:inline-flex;align-items:center;gap:9px;border-radius:18px;padding:10px 13px;background:#fff;color:#1f2937;border:1px solid rgba(255,255,255,.55);font-weight:1000;box-shadow:0 10px 24px rgba(15,23,42,.13)}
 .drive-toggle .drive-svg{width:28px;height:28px;flex:0 0 auto}.drive-toggle small{display:block;font-size:11px;line-height:1;color:#667085;font-weight:900;margin-top:2px}.drive-toggle.connected{background:#ecfdf3;color:#027a48;border-color:#abefc6}.drive-toggle.connected small{color:#027a48}.drive-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.drive-panel{display:none}.drive-panel.open{display:block;animation:driveOpen .18s ease-out}.drive-panel .sync-help{margin:12px 0 0;background:#fffbeb;border:1px solid #fedf89;color:#92400e;border-radius:16px;padding:12px;font-size:13px;font-weight:750;line-height:1.45}.sync-status{line-height:1.4}.compat-note{font-size:12px;color:#667085;font-weight:700;margin-top:-6px}
 @keyframes driveOpen{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-body.mobile .drive-toggle{width:100%;justify-content:center}.hero-actions .drive-toggle + .ghost{ } 
+body.mobile .drive-toggle{width:100%;justify-content:center}body.mobile .hero.compact-hero{flex-direction:row;align-items:center;justify-content:center}.hero.compact-hero .drive-toggle{width:auto}.hero-actions .drive-toggle + .ghost{ }
+@media (max-width: 430px){.hero.compact-hero h1{font-size:19px}.hero.compact-hero .drive-toggle span{display:none}.hero.compact-hero .drive-toggle{padding:8px}} 
 
 </style>
 </head>
 <body class="mobile">
 
 <div class="app-shell">
-  <header class="hero">
-    <div>
-      <p class="eyebrow">Fuel Tracker · ръчно въвеждане</p>
-      <h1>Зареждания и разход на автомобила</h1>
-      <p class="hero-text">Въвеждаш LPG или A95, литри, сума и километраж. Цената на литър се изчислява автоматично, а статистиката се групира по месеци.</p>
-    </div>
+  <header class="hero compact-hero">
+    <h1>FUEL TRACKER</h1>
     <div class="hero-actions">
       <button id="driveToggleBtn" class="drive-toggle" type="button" aria-expanded="false"><svg class="drive-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#1e8e3e" d="M17.2 6h13.6l15 26H32.2z"/><path fill="#fbbc04" d="M17.2 6 2.2 32h13.6l15-26z"/><path fill="#4285f4" d="M15.8 32h30L39 42H9z"/></svg><span>Google Drive<small id="driveQuickStatus">не е настроен</small></span></button>
-      <button id="copyLastBtn" class="ghost">Копирай последно</button>
-      <button id="demoBtn" class="ghost">Примерни данни</button>
     </div>
   </header>
 
@@ -958,8 +956,6 @@ async function boot(){
   });
   $('clearBtn').addEventListener('click', clearForm);
   $('cancelEditBtn').addEventListener('click', clearForm);
-  $('copyLastBtn').addEventListener('click', duplicateLast);
-  $('demoBtn').addEventListener('click', addDemoData);
   $('clearAllBtn').addEventListener('click', clearAll);
   $('exportBtn').addEventListener('click', exportJson);
   $('importInput').addEventListener('change', (e)=>importJson(e.target.files[0]));
