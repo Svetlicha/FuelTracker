@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Fuel Tracker Manual v9 Mobile</title>
+  <title>Fuel Tracker Manual v10 Mobile</title>
   <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6feb">
   <style>
 :root{
@@ -53,10 +53,10 @@ button{cursor:pointer}
 body.mobile .app-shell{max-width:520px}body.mobile .layout{grid-template-columns:1fr}body.mobile .hero{flex-direction:column;align-items:flex-start}body.mobile .field-grid.two,body.mobile .field-grid.three{grid-template-columns:1fr}body.mobile .breakdown,body.mobile .drive-grid{grid-template-columns:1fr}body.mobile .stat-grid,body.mobile .overall-grid{grid-template-columns:1fr 1fr}
 
 .drive-toggle{display:inline-flex;align-items:center;gap:9px;border-radius:18px;padding:10px 13px;background:#fff;color:#1f2937;border:1px solid rgba(255,255,255,.55);font-weight:1000;box-shadow:0 10px 24px rgba(15,23,42,.13)}
-.drive-toggle .drive-svg{width:28px;height:28px;flex:0 0 auto}.drive-toggle small{display:block;font-size:11px;line-height:1;color:#667085;font-weight:900;margin-top:2px}.drive-toggle.connected{background:#ecfdf3;color:#027a48;border-color:#abefc6}.drive-toggle.connected small{color:#027a48}.drive-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.drive-panel{display:none}.drive-panel.open{display:block;animation:driveOpen .18s ease-out}.drive-panel .sync-help{margin:12px 0 0;background:#fffbeb;border:1px solid #fedf89;color:#92400e;border-radius:16px;padding:12px;font-size:13px;font-weight:750;line-height:1.45}.sync-status{line-height:1.4}.compat-note{font-size:12px;color:#667085;font-weight:700;margin-top:-6px}
+.drive-toggle .drive-svg{width:28px;height:28px;flex:0 0 auto}.drive-toggle small{display:block;font-size:11px;line-height:1;color:#667085;font-weight:900;margin-top:2px}.drive-toggle.connected{background:#ecfdf3;color:#027a48;border-color:#abefc6}.drive-toggle.connected small{color:#027a48}.hero.compact-hero .hero-actions{flex-direction:column;gap:4px;align-items:center}.drive-icon-status{min-width:46px;max-width:210px;text-align:center;border-radius:999px;padding:3px 8px;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.66);color:#667085;font-size:10px;font-weight:1000;line-height:1.15;box-shadow:0 8px 18px rgba(15,23,42,.12);white-space:normal;word-break:break-word}.drive-icon-status.ok{background:#ecfdf3;color:#027a48;border-color:#abefc6}.drive-icon-status.busy{background:#eff6ff;color:#1558bd;border-color:#bfdbfe}.drive-icon-status.warn{background:#fffbeb;color:#b54708;border-color:#fedf89}.drive-icon-status.error{background:#fff1f2;color:#b42318;border-color:#fecdd3;border-radius:12px;max-width:230px}.drive-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.drive-panel{display:none}.drive-panel.open{display:block;animation:driveOpen .18s ease-out}.drive-panel .sync-help{margin:12px 0 0;background:#fffbeb;border:1px solid #fedf89;color:#92400e;border-radius:16px;padding:12px;font-size:13px;font-weight:750;line-height:1.45}.sync-status{line-height:1.4}.compat-note{font-size:12px;color:#667085;font-weight:700;margin-top:-6px}
 @keyframes driveOpen{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-body.mobile .drive-toggle{width:100%;justify-content:center}body.mobile .hero.compact-hero{flex-direction:row;align-items:center;justify-content:center}.hero.compact-hero .drive-toggle{width:auto}.hero-actions .drive-toggle + .ghost{ }
-@media (max-width: 430px){.hero.compact-hero h1{font-size:19px}.hero.compact-hero .drive-toggle span{display:none}.hero.compact-hero .drive-toggle{padding:8px}} 
+body.mobile .drive-toggle{width:100%;justify-content:center}.hero.compact-hero .drive-toggle{width:auto}.hero-actions .drive-toggle + .ghost{ }
+@media (max-width: 430px){.hero.compact-hero{justify-content:flex-start;padding-left:16px}.hero.compact-hero h1{font-size:19px}.hero.compact-hero .drive-toggle span{display:none}.hero.compact-hero .drive-toggle{padding:8px}} 
 
 </style>
 </head>
@@ -67,6 +67,7 @@ body.mobile .drive-toggle{width:100%;justify-content:center}body.mobile .hero.co
     <h1>FUEL TRACKER</h1>
     <div class="hero-actions">
       <button id="driveToggleBtn" class="drive-toggle" type="button" aria-expanded="false"><svg class="drive-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#1e8e3e" d="M17.2 6h13.6l15 26H32.2z"/><path fill="#fbbc04" d="M17.2 6 2.2 32h13.6l15-26z"/><path fill="#4285f4" d="M15.8 32h30L39 42H9z"/></svg><span>Google Drive<small id="driveQuickStatus">не е настроен</small></span></button>
+      <div id="driveIconStatus" class="drive-icon-status neutral" title="Статус на Google Drive синхронизацията">Drive</div>
     </div>
   </header>
 
@@ -609,6 +610,22 @@ function importJson(file){
 }
 
 
+function shortDriveStatus(text, type=''){
+  const raw = String(text || '').trim();
+  if (type === 'ok') return 'OK';
+  if (type === 'busy') return '...';
+  if (type === 'warn') return raw ? raw.replace(/^Предупреждение:\s*/i,'').slice(0, 80) : 'Внимание';
+  if (type === 'error') return raw ? raw.slice(0, 90) : 'Грешка';
+  return getDriveUrl() ? 'Drive' : 'OFF';
+}
+function setDriveIconStatus(text, type=''){
+  const iconStatus = $('driveIconStatus');
+  if (!iconStatus) return;
+  const safeType = type || 'neutral';
+  iconStatus.textContent = shortDriveStatus(text, type);
+  iconStatus.title = String(text || 'Статус на Google Drive синхронизацията');
+  iconStatus.className = `drive-icon-status ${safeType}`.trim();
+}
 function setSyncStatus(text, type=''){
   const el = $('syncStatus');
   if (el) {
@@ -617,8 +634,9 @@ function setSyncStatus(text, type=''){
   }
   const quick = $('driveQuickStatus');
   if (quick && text) {
-    quick.textContent = type === 'ok' ? 'синхронизирано' : (type === 'error' ? 'грешка' : (getDriveUrl() ? 'настроен' : 'не е настроен'));
+    quick.textContent = type === 'ok' ? 'OK' : (type === 'error' ? 'грешка' : (type === 'busy' ? 'запис...' : (getDriveUrl() ? 'настроен' : 'не е настроен')));
   }
+  setDriveIconStatus(text, type);
 }
 function getDriveUrl(){
   return String((EMBEDDED_DRIVE_WEB_APP_URL || settings.driveUrl || '')).trim();
@@ -639,6 +657,7 @@ function updateDriveUI(){
   }
   if ($('driveQuickStatus')) $('driveQuickStatus').textContent = url ? 'настроен' : 'не е настроен';
   if ($('driveToggleBtn')) $('driveToggleBtn').classList.toggle('connected', !!url);
+  setDriveIconStatus(url ? 'Google Drive е настроен.' : 'Google Drive не е настроен.', url ? 'neutral' : 'warn');
 }
 function openDrivePanel(scroll=true){
   const panel = $('drivePanel');

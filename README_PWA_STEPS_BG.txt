@@ -1,4 +1,4 @@
-Fuel Tracker PWA Ready v9
+Fuel Tracker PWA Ready v10
 
 Това е готова папка за качване в GitHub Pages / Netlify / Vercel.
 Основният файл за телефон е index.html.
@@ -9,6 +9,6 @@ Fuel Tracker PWA Ready v9
 - manifest.webmanifest — PWA manifest
 - service-worker.js — offline/cache основа
 - icon-192.png и icon-512.png — икони за Android
-- fuel_tracker_google_drive_apps_script_v9.gs — Apps Script код за Drive JSON
+- fuel_tracker_google_drive_apps_script_v10.gs — Apps Script код за Drive JSON
 
 Google Drive /exec URL вече е вграден в index.html и desktop.html.
