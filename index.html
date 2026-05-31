@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fuel Tracker Manual v8 Mobile</title>
+  <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6feb">
+  <style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --ink:#111827;
+  --muted:#667085;
+  --line:#e6eaf0;
+  --soft:#eef4ff;
+  --primary:#1f6feb;
+  --primary-dark:#1558bd;
+  --danger:#ef4444;
+  --danger-soft:#fff1f2;
+  --lpg:#16a34a;
+  --lpg-soft:#dcfce7;
+  --a95:#f59e0b;
+  --a95-soft:#fef3c7;
+  --shadow:0 20px 60px rgba(15,23,42,.08);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,#eaf3ff 0,#f7f9fc 34%,#eef2f7 100%);color:var(--ink);padding-bottom:92px}
+button,input{font:inherit}
+button{cursor:pointer}
+.app-shell{width:min(1220px,calc(100% - 32px));margin:24px auto 40px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:26px;border-radius:30px;background:linear-gradient(135deg,#0f172a,#1f6feb 58%,#22c55e);color:#fff;box-shadow:var(--shadow);margin-bottom:18px}
+.eyebrow{margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;color:#7c8aa5}
+.hero .eyebrow{color:#c8dcff}.hero h1{font-size:clamp(28px,4vw,48px);line-height:1.02;margin:0 0 10px}.hero-text{margin:0;max-width:760px;color:#dbeafe}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.layout{display:grid;grid-template-columns:minmax(420px,.9fr) minmax(420px,1.1fr);gap:18px;align-items:start}
+.panel{background:rgba(255,255,255,.92);border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px;backdrop-filter:blur(10px)}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}.section-head h2{margin:0;font-size:22px}.section-head.compact{align-items:center}.records-pill,.current-pill{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:#475467;font-weight:700;font-size:13px;white-space:nowrap}.records-pill.sync-on{background:#ecfdf3;color:#027a48;border-color:#abefc6}
+.field-grid{display:grid;gap:14px;margin-bottom:14px}.field-grid.two{grid-template-columns:1fr 1fr}.field-grid.three{grid-template-columns:1fr 1fr 1fr}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field span{font-size:13px;font-weight:800;color:#344054}.field input{width:100%;border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:#fff;color:var(--ink);outline:none;transition:.18s ease}.field input:focus{border-color:#84b7ff;box-shadow:0 0 0 4px rgba(31,111,235,.12)}.field em{font-style:normal;color:var(--muted);font-size:12px}.field.readonly input{background:#f8fafc;color:#475467;font-weight:800}.date-input-row{display:flex;gap:8px}.date-input-row input{flex:1}.today-mini{border:0;border-radius:14px;background:var(--soft);color:#1558bd;font-weight:900;padding:0 14px}
+.date-picker{position:absolute;top:82px;left:0;z-index:20;width:min(360px,92vw);background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 26px 80px rgba(15,23,42,.18);padding:14px}.picker-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.round-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#f8fafc;font-size:24px;font-weight:900;color:#1f2937}.picker-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.picker-weekday{text-align:center;color:#667085;font-weight:900;font-size:12px;padding:6px 0}.picker-day{height:38px;border:0;border-radius:12px;background:#f8fafc;color:#111827;font-weight:800}.picker-day.muted{color:#b4bfcc;background:#fff}.picker-day.today{outline:2px solid rgba(31,111,235,.35)}.picker-day.selected{background:#1f6feb;color:#fff}.picker-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.fuel-picker{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 16px}.fuel-option{border:2px solid transparent;border-radius:22px;padding:14px;text-align:left;background:#f8fafc;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"icon title" "icon sub";column-gap:12px;align-items:center;transition:.18s ease}.fuel-option .icon{grid-area:icon;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;font-weight:1000;color:#fff;letter-spacing:-.04em}.fuel-option strong{grid-area:title;font-size:18px}.fuel-option small{grid-area:sub;color:var(--muted);font-weight:700}.fuel-option.lpg .icon{background:var(--lpg)}.fuel-option.a95 .icon{background:var(--a95)}.fuel-option.active{background:#fff;border-color:var(--primary);box-shadow:0 10px 28px rgba(31,111,235,.12)}
+.button-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.button-row.wrap{margin-top:14px}.primary,.ghost,.danger{border:0;border-radius:16px;padding:12px 16px;font-weight:900;min-height:44px}.primary{background:var(--primary);color:#fff;box-shadow:0 10px 24px rgba(31,111,235,.22)}.primary:hover{background:var(--primary-dark)}.ghost{background:#f2f6fb;color:#1f2937;border:1px solid #e5ebf3}.danger{background:var(--danger-soft);color:#b42318;border:1px solid #fecdd3}.small{padding:8px 11px;min-height:36px;font-size:13px;border-radius:12px}.file-label{display:inline-flex;align-items:center;justify-content:center}.form-error{margin:4px 0 12px;color:#b42318;font-weight:800;min-height:20px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat-card{border:1px solid var(--line);border-radius:20px;background:#fff;padding:16px;min-height:128px;display:flex;flex-direction:column;justify-content:space-between}.stat-card span{color:#667085;font-size:13px;font-weight:800}.stat-card strong{font-size:clamp(22px,2.8vw,31px);letter-spacing:-.04em}.stat-card small{color:#7c8aa5;font-weight:700}.stat-card.money{background:linear-gradient(180deg,#eff6ff,#fff)}.stat-card.highlight{background:linear-gradient(180deg,#ecfdf3,#fff);border-color:#bbf7d0}.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.break-row{display:flex;align-items:center;gap:9px;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:12px}.break-row em{margin-left:auto;font-style:normal;color:#475467;font-weight:800}.dot{width:12px;height:12px;border-radius:50%;display:inline-block}.lpg-dot{background:var(--lpg)}.a95-dot{background:var(--a95)}.hint{font-size:13px;color:#667085;margin:12px 2px 0}.overall-box{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.overall-box h3{margin:0 0 10px;font-size:16px}.overall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.overall-grid div{background:#f8fafc;border-radius:16px;padding:12px}.overall-grid strong{display:block;font-size:18px}.overall-grid span{font-size:12px;color:#667085;font-weight:800}
+.calendar-panel{padding-bottom:18px}.calendar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.calendar-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:-4px 0 12px;color:#475467;font-size:13px;font-weight:800}.legend-box{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}.legend-box.lpg{background:var(--lpg)}.legend-box.a95{background:var(--a95)}.fuel-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.calendar-weekday{text-align:center;color:#667085;font-weight:1000;font-size:12px;padding:4px}.calendar-day{min-height:76px;border:1px solid var(--line);background:#fff;border-radius:16px;padding:8px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;transition:.16s ease}.calendar-day.muted{opacity:.42;background:#f8fafc}.calendar-day.today{border-color:#93c5fd}.calendar-day.selected{box-shadow:0 0 0 3px rgba(31,111,235,.15);border-color:#1f6feb}.calendar-day.has-entry{background:linear-gradient(180deg,#fff,#f8fbff)}.day-number{font-weight:1000}.day-markers{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.fuel-marker{width:13px;height:13px;border-radius:4px;display:inline-block}.fuel-marker.lpg{background:var(--lpg)}.fuel-marker.a95{background:var(--a95)}.more-marker{font-size:11px;font-weight:900;color:#475467}.day-details{margin-top:14px;background:#f8fafc;border:1px solid var(--line);border-radius:20px;padding:14px}.day-details h3{margin:0 0 10px}.day-detail-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:8px}.day-detail-stats{display:flex;gap:10px;flex-wrap:wrap;color:#475467;font-weight:800;margin-top:8px}.empty-inline{color:#667085;font-weight:700}
+.drive-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:14px;align-items:start}.drive-options{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;gap:12px}.check-row{display:flex;gap:10px;align-items:flex-start;font-weight:800;color:#344054}.check-row input{width:18px;height:18px;accent-color:var(--primary)}.check-row small{color:#667085;font-weight:750}.sync-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;background:#dcfce7;color:#027a48;font-weight:1000;flex:0 0 auto}.sync-status{margin:12px 0 0;font-weight:800;color:#667085}.sync-status.ok{color:#027a48}.sync-status.warn{color:#b54708}.sync-status.error{color:#b42318}.sync-status.busy{color:#1558bd}
+.entries-list{display:grid;gap:10px}.entry-card{border:1px solid var(--line);border-radius:20px;background:#fff;padding:14px}.entry-main{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.entry-date{font-weight:1000;margin-bottom:8px}.entry-meta{display:flex;gap:8px;flex-wrap:wrap;color:#475467;font-weight:800}.fuel-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;font-weight:1000;font-size:12px}.fuel-badge span{display:inline-flex;align-items:center;justify-content:center;min-width:27px;height:21px;border-radius:999px;color:#fff;font-size:11px}.fuel-badge.lpg{background:var(--lpg-soft);color:#027a48}.fuel-badge.lpg span{background:var(--lpg)}.fuel-badge.a95{background:var(--a95-soft);color:#92400e}.fuel-badge.a95 span{background:var(--a95)}.entry-odo{text-align:right;white-space:nowrap}.entry-odo strong{display:block}.entry-odo span{color:#667085;font-weight:800;font-size:13px}.entry-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.row-warning{margin-top:10px;background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:14px;padding:8px 10px;font-weight:800;font-size:13px}.empty-state{display:grid;place-items:center;text-align:center;gap:8px;padding:28px;color:#667085;border:1px dashed #cbd5e1;border-radius:20px}.empty-state strong{color:#344054}.empty-icon{font-size:32px}.data-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.month-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(1220px,calc(100% - 24px));background:rgba(15,23,42,.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;box-shadow:0 18px 60px rgba(15,23,42,.25);z-index:30}.month-nav-title{color:#fff;font-weight:1000;padding:0 4px}.month-rail{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:2px}.month-rail::-webkit-scrollbar{height:0}.month-chip{scroll-snap-align:center;flex:0 0 auto;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#fff;border-radius:16px;padding:9px 13px;font-weight:1000;min-width:92px;text-align:center}.month-chip small{display:block;font-size:10px;font-weight:700;opacity:.7;margin-top:2px}.month-chip.active{background:#fff;color:#0f172a}
+@media (max-width: 980px){.layout{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.overall-grid{grid-template-columns:repeat(2,1fr)}.drive-grid{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.field-grid.two,.field-grid.three{grid-template-columns:1fr}.breakdown{grid-template-columns:1fr}}
+@media (max-width: 640px){body{padding-bottom:104px}.app-shell{width:calc(100% - 20px);margin:10px auto 32px}.hero{border-radius:24px;padding:20px}.hero h1{font-size:29px}.panel{border-radius:22px;padding:16px;margin-bottom:12px}.section-head{gap:10px}.section-head.compact{align-items:flex-start;flex-direction:column}.current-pill,.records-pill{font-size:12px;padding:7px 10px}.stat-grid{grid-template-columns:1fr 1fr;gap:9px}.stat-card{min-height:112px;padding:13px}.stat-card strong{font-size:22px}.fuel-picker{gap:9px}.fuel-option{padding:11px;border-radius:18px}.fuel-option .icon{width:46px;height:46px;border-radius:14px}.button-row .primary,.button-row .ghost,.button-row .danger{flex:1}.calendar-actions,.data-actions{width:100%;justify-content:stretch}.calendar-actions button,.data-actions button,.data-actions label{flex:1}.fuel-calendar{gap:5px}.calendar-weekday{font-size:11px}.calendar-day{min-height:58px;border-radius:13px;padding:6px}.fuel-marker{width:11px;height:11px}.day-detail-stats{gap:7px}.entry-main{flex-direction:column}.entry-odo{text-align:left}.entry-actions{justify-content:stretch}.entry-actions button{flex:1}.month-nav{bottom:8px;width:calc(100% - 16px);grid-template-columns:1fr;padding:9px;border-radius:22px}.month-nav-title{display:none}.month-chip{min-width:82px;padding:9px 10px}.date-picker{position:fixed;left:10px;right:10px;top:90px;width:auto}.picker-day{height:40px}}
+body.mobile .app-shell{max-width:520px}body.mobile .layout{grid-template-columns:1fr}body.mobile .hero{flex-direction:column;align-items:flex-start}body.mobile .field-grid.two,body.mobile .field-grid.three{grid-template-columns:1fr}body.mobile .breakdown,body.mobile .drive-grid{grid-template-columns:1fr}body.mobile .stat-grid,body.mobile .overall-grid{grid-template-columns:1fr 1fr}
+
+.drive-toggle{display:inline-flex;align-items:center;gap:9px;border-radius:18px;padding:10px 13px;background:#fff;color:#1f2937;border:1px solid rgba(255,255,255,.55);font-weight:1000;box-shadow:0 10px 24px rgba(15,23,42,.13)}
+.drive-toggle .drive-svg{width:28px;height:28px;flex:0 0 auto}.drive-toggle small{display:block;font-size:11px;line-height:1;color:#667085;font-weight:900;margin-top:2px}.drive-toggle.connected{background:#ecfdf3;color:#027a48;border-color:#abefc6}.drive-toggle.connected small{color:#027a48}.drive-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.drive-panel{display:none}.drive-panel.open{display:block;animation:driveOpen .18s ease-out}.drive-panel .sync-help{margin:12px 0 0;background:#fffbeb;border:1px solid #fedf89;color:#92400e;border-radius:16px;padding:12px;font-size:13px;font-weight:750;line-height:1.45}.sync-status{line-height:1.4}.compat-note{font-size:12px;color:#667085;font-weight:700;margin-top:-6px}
+@keyframes driveOpen{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+body.mobile .drive-toggle{width:100%;justify-content:center}.hero-actions .drive-toggle + .ghost{ } 
+
+</style>
+</head>
+<body class="mobile">
+
+<div class="app-shell">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Fuel Tracker · ръчно въвеждане</p>
+      <h1>Зареждания и разход на автомобила</h1>
+      <p class="hero-text">Въвеждаш LPG или A95, литри, сума и километраж. Цената на литър се изчислява автоматично, а статистиката се групира по месеци.</p>
+    </div>
+    <div class="hero-actions">
+      <button id="driveToggleBtn" class="drive-toggle" type="button" aria-expanded="false"><svg class="drive-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#1e8e3e" d="M17.2 6h13.6l15 26H32.2z"/><path fill="#fbbc04" d="M17.2 6 2.2 32h13.6l15-26z"/><path fill="#4285f4" d="M15.8 32h30L39 42H9z"/></svg><span>Google Drive<small id="driveQuickStatus">не е настроен</small></span></button>
+      <button id="copyLastBtn" class="ghost">Копирай последно</button>
+      <button id="demoBtn" class="ghost">Примерни данни</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel form-panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Въвеждане</p>
+          <h2 id="formTitle">Ново зареждане</h2>
+        </div>
+        <span class="records-pill"><span id="totalRecords">0</span> записа</span>
+      </div>
+
+      <form id="entryForm" autocomplete="off">
+        <div class="field-grid two">
+          <label class="field date-field" id="datePickerWrap">
+            <span>Дата</span>
+            <div class="date-input-row">
+              <input id="dateDisplay" type="text" inputmode="numeric" placeholder="ДД/ММ/ГГГГ" required>
+              <button type="button" class="today-mini" onclick="setDate(todayISO(), true)">Днес</button>
+            </div>
+            <input id="dateIso" type="hidden">
+            <div id="datePicker" class="date-picker" hidden>
+              <div class="picker-top">
+                <button type="button" id="pickerPrev" class="round-btn">‹</button>
+                <strong id="pickerMonthLabel">—</strong>
+                <button type="button" id="pickerNext" class="round-btn">›</button>
+              </div>
+              <div id="datePickerGrid" class="picker-grid"></div>
+              <div class="picker-actions">
+                <button type="button" id="pickerToday" class="ghost small">Днес</button>
+                <button type="button" id="pickerClose" class="ghost small">Затвори</button>
+              </div>
+            </div>
+          </label>
+          <label class="field"><span>Бензиностанция</span><input id="station" list="stationList" placeholder="напр. OMV, Shell, EKO" required><datalist id="stationList"></datalist></label>
+        </div>
+
+        <input type="hidden" id="fuelType" value="LPG">
+        <div class="fuel-picker" aria-label="Тип гориво">
+          <button type="button" class="fuel-option lpg active" data-type="LPG"><span class="icon">LPG</span><strong>Газ</strong><small>автогаз</small></button>
+          <button type="button" class="fuel-option a95" data-type="A95"><span class="icon">A95</span><strong>Бензин</strong><small>А95</small></button>
+        </div>
+
+        <div class="field-grid three">
+          <label class="field"><span>Количество гориво</span><input id="liters" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required><em>литри</em></label>
+          <label class="field"><span>Сума</span><input id="total" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required><em>€</em></label>
+          <label class="field readonly"><span>Цена на литър</span><input id="pricePerLiter" type="text" value="—" disabled><em>автоматично</em></label>
+        </div>
+
+        <label class="field"><span>Километраж</span><input id="odometer" type="number" inputmode="numeric" min="0" step="1" placeholder="напр. 158430" required><em>текущ километраж при зареждането</em></label>
+
+        <p id="formError" class="form-error"></p>
+        <div class="button-row">
+          <button id="saveBtn" class="primary" type="submit">Запази зареждане</button>
+          <button id="cancelEditBtn" class="ghost" type="button" hidden>Откажи редакция</button>
+          <button id="clearBtn" class="ghost" type="button">Изчисти</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel stats-panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Статистика за избран месец</p>
+          <h2 id="selectedMonthLabel">—</h2>
+        </div>
+        <span class="current-pill">Текущ: <strong id="currentMonthLabel">—</strong></span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card money"><span>Пари за месеца</span><strong id="monthMoney">0.00 €</strong><small id="monthCount">0 зареждания</small></div>
+        <div class="stat-card"><span>Литри за месеца</span><strong id="monthLiters">0.00 л</strong><small>LPG + A95</small></div>
+        <div class="stat-card"><span>Изминати километри</span><strong id="monthKm">0 км</strong><small>по километраж</small></div>
+        <div class="stat-card highlight"><span>Разход</span><strong id="monthConsumption">—</strong><small id="monthCostPer100">—</small></div>
+      </div>
+
+      <div class="breakdown">
+        <div class="break-row"><span class="dot lpg-dot"></span><strong>LPG / Газ</strong><em id="lpgBreakdown">0.00 л · 0.00 €</em></div>
+        <div class="break-row"><span class="dot a95-dot"></span><strong>A95 / Бензин</strong><em id="a95Breakdown">0.00 л · 0.00 €</em></div>
+      </div>
+      <p id="calcHint" class="hint"></p>
+
+      <div class="overall-box">
+        <h3>Общо за всички записи</h3>
+        <div id="overallStats" class="overall-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="panel calendar-panel">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">Календар</p>
+        <h2 id="calendarMonthLabel">—</h2>
+      </div>
+      <div class="calendar-actions">
+        <button id="prevCalendarMonth" class="ghost small">‹ Предишен</button>
+        <button id="nextCalendarMonth" class="ghost small">Следващ ›</button>
+      </div>
+    </div>
+    <div class="calendar-legend">
+      <span><i class="legend-box lpg"></i>LPG / Газ</span>
+      <span><i class="legend-box a95"></i>A95 / Бензин</span>
+    </div>
+    <div id="fuelCalendar" class="fuel-calendar"></div>
+    <div class="day-details">
+      <h3 id="dayDetailsTitle">Детайли</h3>
+      <div id="dayDetailsList"></div>
+    </div>
+  </section>
+
+  <section id="drivePanel" class="panel drive-panel" aria-hidden="true">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">Google Drive JSON</p>
+        <h2>Синхронизация</h2>
+      </div>
+      <div class="drive-header-actions">
+        <span id="driveConfigBadge" class="records-pill">Drive: не е настроен</span>
+        <button id="closeDrivePanelBtn" class="ghost small" type="button">Скрий</button>
+      </div>
+    </div>
+    <div class="drive-grid">
+      <label class="field"><span>Google Apps Script Web App URL</span><input id="driveUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec"><em>Използвай Web App URL, който завършва на <strong>/exec</strong>. Ако URL е вграден в HTML кода, полето ще бъде само информативно.</em></label>
+      <div class="drive-options">
+        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Синхронизацията е винаги включена</strong><br><small>При отваряне зарежда от Google Drive, а при всяка промяна записва автоматично.</small></div></div>
+        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Съвместим режим е включен</strong><br><small>Помага при “Failed to fetch”, особено на телефон.</small></div></div>
+        <div class="compat-note">Трябва само да има валиден Apps Script Web App URL. Данните пак се пазят и локално като резервно копие.</div>
+      </div>
+    </div>
+    <div class="button-row wrap">
+      <button id="saveDriveSettingsBtn" class="primary" type="button">Запази Drive URL</button>
+      <button id="saveDriveBtn" class="ghost" type="button">Запиши сега в Drive</button>
+      <button id="loadDriveBtn" class="ghost" type="button">Зареди от Drive</button>
+    </div>
+    <p id="syncStatus" class="sync-status">Google Drive синхронизацията е винаги включена, когато има въведен или вграден Web App URL.</p>
+    <div class="sync-help"><strong>Ако пак виждаш “Failed to fetch”:</strong> провери дали Apps Script е Deploy → Web app, “Execute as: Me”, “Who has access: Anyone with the link”, и дали URL адресът е новият <strong>/exec</strong> адрес, не <strong>/dev</strong>.</div>
+  </section>
+
+  <section class="panel entries-panel">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">История</p>
+        <h2>Зареждания за избрания месец</h2>
+      </div>
+      <div class="data-actions">
+        <button id="exportBtn" class="ghost small">Експорт JSON</button>
+        <label class="ghost small file-label">Импорт JSON<input id="importInput" type="file" accept="application/json" hidden></label>
+        <button id="clearAllBtn" class="danger small">Изтрий всички</button>
+      </div>
+    </div>
+    <div id="entriesList" class="entries-list"></div>
+  </section>
+</div>
+
+<nav class="month-nav" aria-label="Месеци">
+  <div class="month-nav-title">Месеци</div>
+  <div id="monthRail" class="month-rail"></div>
+</nav>
+
+<script>
+const STORAGE_KEY = "fuel_manual_tracker_v4";
+const SETTINGS_KEY = "fuel_manual_tracker_settings_v4";
+// По желание можеш да поставиш тук твоя Apps Script Web App URL (/exec), за да бъде вграден в HTML файла.
+// Ако остане празно, приложението ще използва URL адреса, записан от Google Drive панела.
+const EMBEDDED_DRIVE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzwqd8DU2e2ThyD3d-HOQPsk1LDzomHs42Mtfht-8T5SJZEbIdWa_iwjDgSzwDOjo17/exec";
+const DRIVE_SYNC_ALWAYS_ON = true;
+const BG_MONTHS = ["Януари","Февруари","Март","Април","Май","Юни","Юли","Август","Септември","Октомври","Ноември","Декември"];
+const BG_MONTHS_SHORT = ["Ян","Фев","Мар","Апр","Май","Юни","Юли","Авг","Сеп","Окт","Ное","Дек"];
+const WEEK_DAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
+const STATIONS = ["OMV", "Shell", "EKO", "Lukoil", "Petrol", "Insa Oil", "VM Petroleum", "Gazprom", "Друга"];
+
+let entries = [];
+let selectedMonth = monthKey(new Date());
+let selectedCalendarDate = todayISO();
+let editingId = null;
+let pickerMonth = new Date();
+let settings = { driveUrl: EMBEDDED_DRIVE_WEB_APP_URL, autoSync: true, preferRemoteOnStart: true, driveCompatibilityMode: true };
+let syncTimer = null;
+
+const $ = (id) => document.getElementById(id);
+
+function pad(n){ return String(n).padStart(2, '0'); }
+function todayISO(){ const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function parseISO(iso){
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return new Date();
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function monthKey(d){
+  const date = d instanceof Date ? d : parseISO(d);
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}`;
+}
+function monthLabel(key){
+  const [y,m] = key.split('-').map(Number);
+  return `${BG_MONTHS[m-1]} ${y}`;
+}
+function monthShortLabel(key){
+  const [y,m] = key.split('-').map(Number);
+  return `${BG_MONTHS_SHORT[m-1]} ${String(y).slice(2)}`;
+}
+function fmtNum(n, digits=2){
+  if (!Number.isFinite(n)) return "—";
+  return n.toLocaleString('bg-BG', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+function fmtInt(n){
+  if (!Number.isFinite(n)) return "—";
+  return Math.round(n).toLocaleString('bg-BG');
+}
+function fmtMoney(n){ return `${fmtNum(n,2)} €`; }
+function fmtDate(iso){
+  if(!iso) return "—";
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function parseDisplayDate(value){
+  const m = String(value || '').trim().match(/^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})$/);
+  if (!m) return null;
+  const d = Number(m[1]), mo = Number(m[2]), y = Number(m[3]);
+  const dt = new Date(y, mo-1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo-1 || dt.getDate() !== d) return null;
+  return `${y}-${pad(mo)}-${pad(d)}`;
+}
+function parseNumber(value){
+  if (typeof value === 'number') return value;
+  const clean = String(value || '').replace(',', '.').replace(/[^0-9.\-]/g, '');
+  const n = Number(clean);
+  return Number.isFinite(n) ? n : 0;
+}
+function uid(){ return `${Date.now()}_${Math.random().toString(16).slice(2)}`; }
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+
+function loadLocal(){
+  try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch(e){ entries = []; }
+  if (!Array.isArray(entries)) entries = [];
+  entries = entries.map(normalizeEntry).filter(Boolean);
+  try { settings = { ...settings, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')) }; }
+  catch(e){}
+  if (String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim()) settings.driveUrl = String(EMBEDDED_DRIVE_WEB_APP_URL).trim();
+  settings.autoSync = true;
+  settings.preferRemoteOnStart = true;
+  settings.driveCompatibilityMode = true;
+}
+function saveLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+function normalizeEntry(e){
+  if (!e) return null;
+  const liters = parseNumber(e.liters);
+  const total = parseNumber(e.total);
+  const odometer = parseNumber(e.odometer);
+  return {
+    id: e.id || uid(),
+    date: e.date || todayISO(),
+    station: String(e.station || '').trim(),
+    fuelType: e.fuelType === 'A95' ? 'A95' : 'LPG',
+    liters,
+    total,
+    pricePerLiter: liters > 0 ? total / liters : 0,
+    odometer,
+    createdAt: e.createdAt || new Date().toISOString(),
+    updatedAt: e.updatedAt || null
+  };
+}
+function normalizeDataPayload(data){
+  const imported = Array.isArray(data) ? data : data?.entries;
+  if (!Array.isArray(imported)) return [];
+  return imported.map(normalizeEntry).filter(Boolean);
+}
+function dataPayload(){
+  return {
+    app: "fuel-tracker-manual",
+    version: 7,
+    savedAt: new Date().toISOString(),
+    entries
+  };
+}
+
+function sortedEntries(){
+  return [...entries].sort((a,b) => {
+    const da = a.date || ''; const db = b.date || '';
+    if (da !== db) return da.localeCompare(db);
+    const oa = parseNumber(a.odometer); const ob = parseNumber(b.odometer);
+    if (oa !== ob) return oa - ob;
+    return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+  });
+}
+function entriesWithDeltas(){
+  let prev = null;
+  return sortedEntries().map(e => {
+    let kmDelta = null;
+    let kmIssue = '';
+    const odo = parseNumber(e.odometer);
+    if (prev && Number.isFinite(odo) && odo > 0) {
+      const prevOdo = parseNumber(prev.odometer);
+      if (odo > prevOdo) kmDelta = odo - prevOdo;
+      else kmIssue = 'Километражът не е по-голям от предишния запис';
+    }
+    if (odo > 0) prev = e;
+    return { ...e, kmDelta, kmIssue };
+  });
+}
+function calculateStats(month=null){
+  const rows = entriesWithDeltas();
+  const filtered = month ? rows.filter(e => monthKey(e.date) === month) : rows;
+  const totalSum = filtered.reduce((s,e)=>s + parseNumber(e.total), 0);
+  const totalLiters = filtered.reduce((s,e)=>s + parseNumber(e.liters), 0);
+  const km = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? e.kmDelta : 0), 0);
+  const litersForConsumption = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? parseNumber(e.liters) : 0), 0);
+  const sumForConsumption = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? parseNumber(e.total) : 0), 0);
+  const byType = {
+    LPG: filtered.filter(e=>e.fuelType==='LPG').reduce((acc,e)=>({liters: acc.liters+parseNumber(e.liters), total: acc.total+parseNumber(e.total)}), {liters:0,total:0}),
+    A95: filtered.filter(e=>e.fuelType==='A95').reduce((acc,e)=>({liters: acc.liters+parseNumber(e.liters), total: acc.total+parseNumber(e.total)}), {liters:0,total:0})
+  };
+  return {
+    count: filtered.length,
+    totalSum,
+    totalLiters,
+    km,
+    consumption: km > 0 ? litersForConsumption / km * 100 : null,
+    costPer100: km > 0 ? sumForConsumption / km * 100 : null,
+    byType,
+    filtered
+  };
+}
+function monthKeys(){
+  const now = new Date();
+  const keys = new Set();
+  for (let offset=-1; offset<12; offset++) {
+    const d = new Date(now.getFullYear(), now.getMonth()+offset, 1);
+    keys.add(monthKey(d));
+  }
+  entries.forEach(e => keys.add(monthKey(e.date)));
+  keys.add(selectedMonth);
+  return [...keys].sort();
+}
+
+function setFuelType(type){
+  document.querySelectorAll('.fuel-option').forEach(btn => btn.classList.toggle('active', btn.dataset.type === type));
+  $('fuelType').value = type;
+}
+function updatePrice(){
+  const liters = parseNumber($('liters').value);
+  const total = parseNumber($('total').value);
+  const price = liters > 0 && total > 0 ? total / liters : 0;
+  $('pricePerLiter').value = price ? fmtNum(price, 3) + ' €/л' : '—';
+}
+function setDate(iso, shouldRenderPicker=true){
+  $('dateIso').value = iso;
+  $('dateDisplay').value = fmtDate(iso);
+  pickerMonth = parseISO(iso);
+  if (shouldRenderPicker) renderDatePicker();
+}
+function getFormDate(){
+  const typed = parseDisplayDate($('dateDisplay').value);
+  if (typed) {
+    $('dateIso').value = typed;
+    return typed;
+  }
+  return $('dateIso').value || todayISO();
+}
+function openDatePicker(){
+  const pop = $('datePicker');
+  pop.hidden = false;
+  pickerMonth = parseISO(getFormDate());
+  renderDatePicker();
+}
+function closeDatePicker(){ $('datePicker').hidden = true; }
+function shiftPickerMonth(delta){
+  pickerMonth = new Date(pickerMonth.getFullYear(), pickerMonth.getMonth()+delta, 1);
+  renderDatePicker();
+}
+function renderDatePicker(){
+  if (!$('datePickerGrid')) return;
+  const y = pickerMonth.getFullYear();
+  const m = pickerMonth.getMonth();
+  $('pickerMonthLabel').textContent = `${BG_MONTHS[m]} ${y}`;
+  const first = new Date(y, m, 1);
+  const firstMondayIndex = (first.getDay() + 6) % 7;
+  const start = new Date(y, m, 1 - firstMondayIndex);
+  const selected = getFormDate();
+  const today = todayISO();
+  let html = WEEK_DAYS.map(d => `<div class="picker-weekday">${d}</div>`).join('');
+  for (let i=0; i<42; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    html += `<button type="button" class="picker-day ${d.getMonth()!==m?'muted':''} ${iso===selected?'selected':''} ${iso===today?'today':''}" data-date="${iso}">${d.getDate()}</button>`;
+  }
+  $('datePickerGrid').innerHTML = html;
+  $('datePickerGrid').querySelectorAll('.picker-day').forEach(btn => {
+    btn.addEventListener('click', () => { setDate(btn.dataset.date, false); closeDatePicker(); });
+  });
+}
+
+function clearForm(){
+  editingId = null;
+  $('entryForm').reset();
+  setDate(todayISO(), false);
+  $('station').value = '';
+  setFuelType('LPG');
+  updatePrice();
+  $('saveBtn').textContent = 'Запази зареждане';
+  $('cancelEditBtn').hidden = true;
+  $('formTitle').textContent = 'Ново зареждане';
+  $('formError').textContent = '';
+}
+function validateForm(){
+  const errors = [];
+  const date = getFormDate();
+  if (!date) errors.push('Избери дата.');
+  if (!$('station').value.trim()) errors.push('Въведи бензиностанция.');
+  if (parseNumber($('liters').value) <= 0) errors.push('Въведи количество гориво.');
+  if (parseNumber($('total').value) <= 0) errors.push('Въведи сума.');
+  if (parseNumber($('odometer').value) <= 0) errors.push('Въведи километраж.');
+  $('formError').textContent = errors.join(' ');
+  return errors.length === 0;
+}
+function submitForm(evt){
+  evt.preventDefault();
+  if (!validateForm()) return;
+  const liters = parseNumber($('liters').value);
+  const total = parseNumber($('total').value);
+  const date = getFormDate();
+  const data = {
+    id: editingId || uid(),
+    date,
+    station: $('station').value.trim(),
+    fuelType: $('fuelType').value === 'A95' ? 'A95' : 'LPG',
+    liters,
+    total,
+    pricePerLiter: liters > 0 ? total / liters : 0,
+    odometer: parseNumber($('odometer').value),
+    createdAt: editingId ? (entries.find(e=>e.id===editingId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+    updatedAt: editingId ? new Date().toISOString() : null
+  };
+  if (editingId) entries = entries.map(e => e.id === editingId ? data : e);
+  else entries.push(data);
+  selectedMonth = monthKey(data.date);
+  selectedCalendarDate = data.date;
+  saveAndRender('Запазено локално.');
+  clearForm();
+}
+function editEntry(id){
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  editingId = id;
+  setDate(e.date, false);
+  $('station').value = e.station;
+  setFuelType(e.fuelType);
+  $('liters').value = e.liters;
+  $('total').value = e.total;
+  $('odometer').value = e.odometer;
+  updatePrice();
+  $('saveBtn').textContent = 'Запази промяната';
+  $('cancelEditBtn').hidden = false;
+  $('formTitle').textContent = 'Редакция на зареждане';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function deleteEntry(id){
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  if (!confirm(`Да изтрия ли зареждането от ${fmtDate(e.date)} за ${fmtMoney(e.total)}?`)) return;
+  entries = entries.filter(x=>x.id!==id);
+  if (!monthKeys().includes(selectedMonth)) selectedMonth = monthKey(new Date());
+  saveAndRender('Записът е изтрит.');
+}
+function duplicateLast(){
+  const last = sortedEntries().at(-1);
+  if (!last) return;
+  setDate(todayISO(), false);
+  $('station').value = last.station;
+  setFuelType(last.fuelType);
+  $('liters').value = '';
+  $('total').value = '';
+  $('odometer').value = last.odometer ? Math.round(last.odometer) : '';
+  updatePrice();
+  $('formError').textContent = 'Копирах бензиностанция, тип гориво и последен километраж. Попълни новите литри, сума и километраж.';
+}
+function addDemoData(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth()+1;
+  const baseOdo = 118240;
+  const sample = [
+    {date:`${y}-${pad(m)}-03`, station:'OMV', fuelType:'LPG', liters:34.2, total:41.04, odometer:baseOdo+0},
+    {date:`${y}-${pad(m)}-11`, station:'EKO', fuelType:'LPG', liters:32.8, total:39.36, odometer:baseOdo+392},
+    {date:`${y}-${pad(m)}-19`, station:'Shell', fuelType:'A95', liters:12.4, total:33.48, odometer:baseOdo+721},
+    {date:`${y}-${pad(m)}-27`, station:'Lukoil', fuelType:'LPG', liters:35.1, total:42.12, odometer:baseOdo+1125},
+  ].map(x => normalizeEntry({...x, id: uid(), createdAt: new Date().toISOString()}));
+  entries.push(...sample);
+  selectedMonth = `${y}-${pad(m)}`;
+  selectedCalendarDate = sample[0].date;
+  saveAndRender('Добавени са примерни данни.');
+}
+function clearAll(){
+  if (!entries.length) return;
+  if (!confirm('Да изтрия ли всички запазени зареждания?')) return;
+  entries = [];
+  selectedMonth = monthKey(new Date());
+  selectedCalendarDate = todayISO();
+  saveAndRender('Всички записи са изтрити.');
+}
+function saveAndRender(message=''){
+  saveLocal();
+  render();
+  if (message) setSyncStatus(message, 'ok');
+  scheduleDriveSave();
+}
+
+function exportJson(){
+  const blob = new Blob([JSON.stringify(dataPayload(), null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `fuel-data-${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function importJson(file){
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = normalizeDataPayload(JSON.parse(reader.result));
+      if (!imported.length) throw new Error('Няма entries');
+      const map = new Map(entries.map(e=>[e.id,e]));
+      imported.forEach(e => map.set(e.id, e));
+      entries = [...map.values()];
+      saveAndRender(`Импортирани са ${imported.length} записа.`);
+    } catch(err) {
+      $('formError').textContent = 'Файлът не може да бъде импортиран. Провери дали е JSON експорт от приложението.';
+    }
+  };
+  reader.readAsText(file);
+}
+
+
+function setSyncStatus(text, type=''){
+  const el = $('syncStatus');
+  if (el) {
+    el.textContent = text;
+    el.className = `sync-status ${type}`.trim();
+  }
+  const quick = $('driveQuickStatus');
+  if (quick && text) {
+    quick.textContent = type === 'ok' ? 'синхронизирано' : (type === 'error' ? 'грешка' : (getDriveUrl() ? 'настроен' : 'не е настроен'));
+  }
+}
+function getDriveUrl(){
+  return String((EMBEDDED_DRIVE_WEB_APP_URL || settings.driveUrl || '')).trim();
+}
+function updateDriveUI(){
+  const url = getDriveUrl();
+  if ($('driveUrl')) {
+    $('driveUrl').value = url || settings.driveUrl || '';
+    $('driveUrl').readOnly = !!String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim();
+    $('driveUrl').title = $('driveUrl').readOnly ? 'URL адресът е вграден в HTML кода.' : '';
+  }
+  settings.autoSync = true;
+  settings.preferRemoteOnStart = true;
+  settings.driveCompatibilityMode = true;
+  if ($('driveConfigBadge')) {
+    $('driveConfigBadge').textContent = url ? 'Drive: включен' : 'Drive: не е настроен';
+    $('driveConfigBadge').className = url ? 'records-pill sync-on' : 'records-pill';
+  }
+  if ($('driveQuickStatus')) $('driveQuickStatus').textContent = url ? 'настроен' : 'не е настроен';
+  if ($('driveToggleBtn')) $('driveToggleBtn').classList.toggle('connected', !!url);
+}
+function openDrivePanel(scroll=true){
+  const panel = $('drivePanel');
+  const btn = $('driveToggleBtn');
+  if (!panel) return;
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden', 'false');
+  if (btn) btn.setAttribute('aria-expanded', 'true');
+  if (scroll) setTimeout(() => panel.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+}
+function closeDrivePanel(){
+  const panel = $('drivePanel');
+  const btn = $('driveToggleBtn');
+  if (!panel) return;
+  panel.classList.remove('open');
+  panel.setAttribute('aria-hidden', 'true');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+function toggleDrivePanel(){
+  const panel = $('drivePanel');
+  if (!panel) return;
+  panel.classList.contains('open') ? closeDrivePanel() : openDrivePanel(true);
+}
+function saveDriveSettings(){
+  if (!String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim()) settings.driveUrl = $('driveUrl').value.trim();
+  settings.autoSync = true;
+  settings.preferRemoteOnStart = true;
+  settings.driveCompatibilityMode = true;
+  saveSettings();
+  updateDriveUI();
+  setSyncStatus(getDriveUrl() ? 'Drive URL е запазен. Автоматичната синхронизация е включена постоянно.' : 'Няма Drive URL. Данните се пазят локално, докато не добавиш /exec адрес.', getDriveUrl() ? 'ok' : 'warn');
+  if (getDriveUrl()) saveToDrive(true);
+}
+function driveFetchErrorMessage(err){
+  const msg = String(err && err.message ? err.message : err || '');
+  if (/Failed to fetch|NetworkError|Load failed|fetch/i.test(msg)) {
+    return 'Failed to fetch: браузърът блокира връзката към Google Apps Script. Провери Web App deployment-а: Execute as Me, Anyone with the link, и използвай /exec URL. Можеш да оставиш включен “Съвместим режим”.';
+  }
+  return msg || 'Неуспешна връзка с Google Drive.';
+}
+async function driveRequest(payload){
+  const url = getDriveUrl();
+  if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
+  let res;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+  } catch(err) {
+    const e = new Error(driveFetchErrorMessage(err));
+    e.code = 'FETCH_FAILED';
+    throw e;
+  }
+  if (!res.ok) throw new Error(`Drive върна HTTP ${res.status}. Провери дали Apps Script URL е правилният /exec адрес.`);
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch(e){ throw new Error('Drive върна невалиден отговор. Провери дали Apps Script е deploy-нат като Web App и дали не си отворил /dev URL.'); }
+  if (!data.ok) throw new Error(data.error || 'Грешка при синхронизация.');
+  return data;
+}
+async function driveSaveFallback(payload){
+  const url = getDriveUrl();
+  if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
+  await fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow'
+  });
+  return { ok:true, opaque:true };
+}
+function driveJsonpLoad(){
+  const url = getDriveUrl();
+  if (!url) return Promise.reject(new Error('Няма въведен или вграден Google Apps Script Web App URL.'));
+  return new Promise((resolve, reject) => {
+    const callbackName = '__fuelTrackerDriveLoad_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const sep = url.includes('?') ? '&' : '?';
+    const script = document.createElement('script');
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Drive не отговори при резервното зареждане. Провери Apps Script deployment-а.'));
+    }, 15000);
+    function cleanup(){
+      clearTimeout(timer);
+      try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[callbackName] = (data) => { cleanup(); resolve(data); };
+    script.onerror = () => { cleanup(); reject(new Error('Резервното зареждане от Drive беше блокирано. Провери дали URL е публичен /exec Web App.')); };
+    script.src = `${url}${sep}action=load&callback=${encodeURIComponent(callbackName)}&t=${Date.now()}`;
+    document.head.appendChild(script);
+  });
+}
+async function saveToDrive(manual=false){
+  if (!getDriveUrl()) {
+    if (manual) { openDrivePanel(true); setSyncStatus('Първо въведи или вгради Google Apps Script Web App URL.', 'warn'); }
+    return;
+  }
+  const payload = { action:'save', data: dataPayload() };
+  try {
+    setSyncStatus('Записване в Google Drive...', 'busy');
+    await driveRequest(payload);
+    setSyncStatus(`Запазено в Google Drive: ${new Date().toLocaleTimeString('bg-BG', {hour:'2-digit', minute:'2-digit'})}`, 'ok');
+  } catch(err) {
+    const canFallback = (err && err.code === 'FETCH_FAILED') && settings.driveCompatibilityMode !== false;
+    if (canFallback) {
+      try {
+        setSyncStatus('Нормалният запис беше блокиран. Опитвам съвместим режим...', 'warn');
+        await driveSaveFallback(payload);
+        setSyncStatus('Записът е изпратен към Google Drive в съвместим режим. Понеже браузърът блокира отговора, не мога да потвърдя със 100%.', 'warn');
+        return;
+      } catch(fallbackErr) {
+        openDrivePanel(true);
+        setSyncStatus(driveFetchErrorMessage(fallbackErr), 'error');
+        return;
+      }
+    }
+    openDrivePanel(true);
+    setSyncStatus(driveFetchErrorMessage(err), 'error');
+  }
+}
+async function loadFromDrive(manual=false){
+  if (!getDriveUrl()) {
+    if (manual) { openDrivePanel(true); setSyncStatus('Първо въведи или вгради Google Apps Script Web App URL.', 'warn'); }
+    return;
+  }
+  try {
+    setSyncStatus('Зареждане от Google Drive...', 'busy');
+    let res;
+    try {
+      res = await driveRequest({ action:'load' });
+    } catch(err) {
+      if (err && err.code === 'FETCH_FAILED') {
+        setSyncStatus('Нормалното зареждане беше блокирано. Опитвам резервно зареждане...', 'warn');
+        res = await driveJsonpLoad();
+      } else {
+        throw err;
+      }
+    }
+    const remoteEntries = normalizeDataPayload(res.data || res);
+    if (remoteEntries.length || manual) {
+      const map = new Map(entries.map(e=>[e.id,e]));
+      remoteEntries.forEach(e => map.set(e.id, e));
+      entries = [...map.values()];
+      saveLocal();
+      render();
+    }
+    setSyncStatus(`Заредено от Google Drive: ${remoteEntries.length} записа`, 'ok');
+  } catch(err) {
+    openDrivePanel(true);
+    setSyncStatus(driveFetchErrorMessage(err) || 'Неуспешно зареждане от Google Drive.', 'error');
+  }
+}
+function scheduleDriveSave(){
+  if (!getDriveUrl()) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => saveToDrive(false), 700);
+}
+
+function renderStatCards(stats, overall){
+  $('selectedMonthLabel').textContent = monthLabel(selectedMonth);
+  $('currentMonthLabel').textContent = monthLabel(monthKey(new Date()));
+  $('monthMoney').textContent = fmtMoney(stats.totalSum);
+  $('monthLiters').textContent = `${fmtNum(stats.totalLiters,2)} л`;
+  $('monthKm').textContent = `${fmtInt(stats.km)} км`;
+  $('monthConsumption').textContent = stats.consumption ? `${fmtNum(stats.consumption,2)} л/100 км` : '—';
+  $('monthCostPer100').textContent = stats.costPer100 ? `${fmtMoney(stats.costPer100)} /100 км` : '—';
+  $('monthCount').textContent = `${stats.count} зареждания`;
+  $('lpgBreakdown').textContent = `${fmtNum(stats.byType.LPG.liters,2)} л · ${fmtMoney(stats.byType.LPG.total)}`;
+  $('a95Breakdown').textContent = `${fmtNum(stats.byType.A95.liters,2)} л · ${fmtMoney(stats.byType.A95.total)}`;
+  $('overallStats').innerHTML = `
+    <div><strong>${fmtMoney(overall.totalSum)}</strong><span>общо пари</span></div>
+    <div><strong>${fmtNum(overall.totalLiters,2)} л</strong><span>общо гориво</span></div>
+    <div><strong>${fmtInt(overall.km)} км</strong><span>общо км</span></div>
+    <div><strong>${overall.consumption ? fmtNum(overall.consumption,2) + ' л/100 км' : '—'}</strong><span>среден разход</span></div>
+  `;
+  const hint = stats.count && !stats.km
+    ? 'За разход/100 км са нужни поне два записа с нарастващ километраж.'
+    : 'Километрите се смятат като разлика между текущия и предишния километраж. LPG и A95 участват в общия разход.';
+  $('calcHint').textContent = hint;
+}
+function renderMonths(){
+  const keys = monthKeys();
+  const html = keys.map(k => `<button class="month-chip ${k===selectedMonth?'active':''}" data-month="${k}">${monthShortLabel(k)}<small>${monthLabel(k)}</small></button>`).join('');
+  $('monthRail').innerHTML = html;
+  document.querySelectorAll('.month-chip').forEach(btn => {
+    btn.addEventListener('click', () => { selectedMonth = btn.dataset.month; selectedCalendarDate = `${selectedMonth}-01`; render(); });
+  });
+  const active = document.querySelector('.month-chip.active');
+  if (active) setTimeout(()=> active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}), 20);
+}
+function fuelBadge(type){
+  return type === 'A95'
+    ? '<span class="fuel-badge a95"><span>A95</span>Бензин</span>'
+    : '<span class="fuel-badge lpg"><span>LPG</span>Газ</span>';
+}
+function renderEntries(stats){
+  const rows = stats.filtered.sort((a,b) => b.date.localeCompare(a.date) || parseNumber(b.odometer)-parseNumber(a.odometer));
+  const wrap = $('entriesList');
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">⛽</div>
+      <strong>Няма записи за ${monthLabel(selectedMonth)}</strong>
+      <span>Добави зареждане от формата горе или избери друг месец.</span>
+    </div>`;
+    return;
+  }
+  wrap.innerHTML = rows.map(e => `
+    <article class="entry-card">
+      <div class="entry-main">
+        <div>
+          <div class="entry-date">${fmtDate(e.date)} · ${escapeHtml(e.station || '—')}</div>
+          <div class="entry-meta">${fuelBadge(e.fuelType)} <span>${fmtNum(e.liters,2)} л</span> <span>${fmtMoney(e.total)}</span> <span>${fmtNum(e.pricePerLiter,3)} €/л</span></div>
+        </div>
+        <div class="entry-odo">
+          <strong>${fmtInt(e.odometer)} км</strong>
+          <span>${Number.isFinite(e.kmDelta) ? '+' + fmtInt(e.kmDelta) + ' км' : 'първи/без км'}</span>
+        </div>
+      </div>
+      ${e.kmIssue ? `<div class="row-warning">${e.kmIssue}</div>` : ''}
+      <div class="entry-actions">
+        <button class="ghost small" onclick="editEntry('${e.id}')">Редакция</button>
+        <button class="danger small" onclick="deleteEntry('${e.id}')">Изтрий</button>
+      </div>
+    </article>`).join('');
+}
+function renderCalendar(){
+  const [y,m] = selectedMonth.split('-').map(Number);
+  $('calendarMonthLabel').textContent = monthLabel(selectedMonth);
+  const first = new Date(y, m-1, 1);
+  const firstMondayIndex = (first.getDay() + 6) % 7;
+  const start = new Date(y, m-1, 1 - firstMondayIndex);
+  const byDate = new Map();
+  entries.filter(e => monthKey(e.date) === selectedMonth).forEach(e => {
+    if (!byDate.has(e.date)) byDate.set(e.date, []);
+    byDate.get(e.date).push(e);
+  });
+  const today = todayISO();
+  let html = WEEK_DAYS.map(d => `<div class="calendar-weekday">${d}</div>`).join('');
+  for (let i=0; i<42; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const dayEntries = byDate.get(iso) || [];
+    const markers = dayEntries.slice(0,4).map(e => `<span class="fuel-marker ${e.fuelType.toLowerCase()}" title="${e.fuelType}"></span>`).join('') + (dayEntries.length > 4 ? `<span class="more-marker">+${dayEntries.length-4}</span>` : '');
+    html += `<button type="button" class="calendar-day ${d.getMonth()!==m-1?'muted':''} ${iso===today?'today':''} ${iso===selectedCalendarDate?'selected':''} ${dayEntries.length?'has-entry':''}" data-date="${iso}">
+      <span class="day-number">${d.getDate()}</span>
+      <span class="day-markers">${markers}</span>
+    </button>`;
+  }
+  $('fuelCalendar').innerHTML = html;
+  $('fuelCalendar').querySelectorAll('.calendar-day').forEach(btn => {
+    btn.addEventListener('click', () => { selectedCalendarDate = btn.dataset.date; selectedMonth = monthKey(selectedCalendarDate); render(); });
+  });
+  renderDayDetails(byDate.get(selectedCalendarDate) || []);
+}
+function renderDayDetails(dayEntries){
+  $('dayDetailsTitle').textContent = `Детайли за ${fmtDate(selectedCalendarDate)}`;
+  const wrap = $('dayDetailsList');
+  if (!dayEntries.length) {
+    wrap.innerHTML = `<div class="empty-inline">Няма зареждане за тази дата.</div>`;
+    return;
+  }
+  const rows = dayEntries.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+  wrap.innerHTML = rows.map(e => `<div class="day-detail-card">
+    <div>${fuelBadge(e.fuelType)} <strong>${escapeHtml(e.station || '—')}</strong></div>
+    <div class="day-detail-stats"><span>${fmtNum(e.liters,2)} л</span><span>${fmtMoney(e.total)}</span><span>${fmtNum(e.pricePerLiter,3)} €/л</span><span>${fmtInt(e.odometer)} км</span></div>
+  </div>`).join('');
+}
+function shiftSelectedMonth(delta){
+  const [y,m] = selectedMonth.split('-').map(Number);
+  const d = new Date(y, m-1+delta, 1);
+  selectedMonth = monthKey(d);
+  selectedCalendarDate = `${selectedMonth}-01`;
+  render();
+}
+function renderStationDatalist(){
+  $('stationList').innerHTML = STATIONS.map(s=>`<option value="${s}">`).join('');
+}
+function render(){
+  const stats = calculateStats(selectedMonth);
+  const overall = calculateStats(null);
+  renderStatCards(stats, overall);
+  renderMonths();
+  renderCalendar();
+  renderEntries(stats);
+  $('totalRecords').textContent = entries.length;
+  updateDriveUI();
+}
+async function boot(){
+  loadLocal();
+  renderStationDatalist();
+  setDate(todayISO(), false);
+  setFuelType('LPG');
+  $('entryForm').addEventListener('submit', submitForm);
+  $('liters').addEventListener('input', updatePrice);
+  $('total').addEventListener('input', updatePrice);
+  $('dateDisplay').addEventListener('click', openDatePicker);
+  $('dateDisplay').addEventListener('focus', openDatePicker);
+  $('dateDisplay').addEventListener('change', () => {
+    const parsed = parseDisplayDate($('dateDisplay').value);
+    if (parsed) setDate(parsed, true);
+  });
+  $('pickerPrev').addEventListener('click', () => shiftPickerMonth(-1));
+  $('pickerNext').addEventListener('click', () => shiftPickerMonth(1));
+  $('pickerToday').addEventListener('click', () => { setDate(todayISO(), false); closeDatePicker(); });
+  $('pickerClose').addEventListener('click', closeDatePicker);
+  document.addEventListener('click', (evt) => {
+    const box = $('datePickerWrap');
+    if (box && !box.contains(evt.target)) closeDatePicker();
+  });
+  $('clearBtn').addEventListener('click', clearForm);
+  $('cancelEditBtn').addEventListener('click', clearForm);
+  $('copyLastBtn').addEventListener('click', duplicateLast);
+  $('demoBtn').addEventListener('click', addDemoData);
+  $('clearAllBtn').addEventListener('click', clearAll);
+  $('exportBtn').addEventListener('click', exportJson);
+  $('importInput').addEventListener('change', (e)=>importJson(e.target.files[0]));
+  $('driveToggleBtn').addEventListener('click', toggleDrivePanel);
+  $('closeDrivePanelBtn').addEventListener('click', closeDrivePanel);
+  $('saveDriveSettingsBtn').addEventListener('click', saveDriveSettings);
+  $('loadDriveBtn').addEventListener('click', () => loadFromDrive(true));
+  $('saveDriveBtn').addEventListener('click', () => saveToDrive(true));
+  $('prevCalendarMonth').addEventListener('click', () => shiftSelectedMonth(-1));
+  $('nextCalendarMonth').addEventListener('click', () => shiftSelectedMonth(1));
+  document.querySelectorAll('.fuel-option').forEach(btn => btn.addEventListener('click', () => setFuelType(btn.dataset.type)));
+  render();
+  if (getDriveUrl()) await loadFromDrive(false);
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+window.editEntry = editEntry;
+window.deleteEntry = deleteEntry;
+</script>
+<script>
+if ('serviceWorker' in navigator && document.body.classList.contains('mobile')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => null));
+}
+</script>
+</body>
+</html>
