@@ -115,7 +115,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
               </div>
             </div>
           </label>
-          <label class="field"><span>Бензиностанция</span><input id="station" list="stationList" placeholder="напр. OMV, Shell, EKO" required><datalist id="stationList"></datalist></label>
+          <label class="field"><span>Бензиностанция</span><input id="station" list="stationList" placeholder="TOMI" required><datalist id="stationList"></datalist></label>
         </div>
 
         <input type="hidden" id="fuelType" value="LPG">
@@ -251,7 +251,8 @@ const DRIVE_SYNC_ALWAYS_ON = true;
 const BG_MONTHS = ["Януари","Февруари","Март","Април","Май","Юни","Юли","Август","Септември","Октомври","Ноември","Декември"];
 const BG_MONTHS_SHORT = ["Ян","Фев","Мар","Апр","Май","Юни","Юли","Авг","Сеп","Окт","Ное","Дек"];
 const WEEK_DAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
-const STATIONS = ["OMV", "Shell", "EKO", "Lukoil", "Petrol", "Insa Oil", "VM Petroleum", "Gazprom", "Друга"];
+const DEFAULT_STATION = "TOMI";
+const STATIONS = [DEFAULT_STATION, "OMV", "Shell", "EKO", "Lukoil", "Petrol", "Insa Oil", "VM Petroleum", "Gazprom", "Друга"];
 
 let entries = [];
 let selectedMonth = monthKey(new Date());
@@ -481,7 +482,7 @@ function clearForm(){
   editingId = null;
   $('entryForm').reset();
   setDate(todayISO(), false);
-  $('station').value = '';
+  $('station').value = DEFAULT_STATION;
   setFuelType('LPG');
   updatePrice();
   $('saveBtn').textContent = 'Запази зареждане';
@@ -967,6 +968,7 @@ async function boot(){
   loadLocal();
   renderStationDatalist();
   setDate(todayISO(), false);
+  $('station').value = DEFAULT_STATION;
   setFuelType('LPG');
   $('entryForm').addEventListener('submit', submitForm);
   $('liters').addEventListener('input', updatePrice);
