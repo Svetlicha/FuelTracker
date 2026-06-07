@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fuel-tracker-pwa-v15-ready';
+const CACHE_NAME = 'fuel-tracker-pwa-v17-ready';
 const FILES = [
   './',
   './index.html',
