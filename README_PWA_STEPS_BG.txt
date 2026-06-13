@@ -1,3 +1,17 @@
+Fuel Tracker PWA v19
+
+Login данни:
+Username: Svetlicha
+Password: svetliN88
+
+Fuel Tracker v18 PWA-ready
+
+Промени във v18:
+- цени до 2 знака след десетичната запетая;
+- Login екран с Username/Password;
+- опция „Запомни това устройство“;
+- начален login: admin / 1234.
+
 Fuel Tracker PWA Ready v17
 
 Това е готова папка за качване в GitHub Pages / Netlify / Vercel.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Fuel Tracker Manual v17 Mobile</title>
+  <title>Fuel Tracker Manual v18 Mobile</title>
   <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f6feb">
   <style>
 :root{
@@ -58,6 +58,13 @@ body.mobile .app-shell{max-width:520px}body.mobile .layout{grid-template-columns
 body.mobile .drive-toggle{width:100%;justify-content:center}.hero.compact-hero .drive-toggle{width:auto}.hero-actions .drive-toggle + .ghost{ }
 @media (max-width: 430px){.hero.compact-hero{justify-content:flex-start;padding-left:16px}.hero.compact-hero h1{font-size:19px}.hero.compact-hero .drive-toggle span{display:none}.hero.compact-hero .drive-toggle{padding:8px}} 
 
+
+/* v18: simple login screen */
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at top left,#eaf3ff 0,#f7f9fc 34%,#eef2f7 100%)}
+.auth-card{width:min(440px,100%);background:rgba(255,255,255,.95);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:var(--shadow);padding:24px;backdrop-filter:blur(10px)}
+.auth-logo{height:78px;border-radius:24px;background:linear-gradient(135deg,#0f172a,#1f6feb 58%,#22c55e);display:grid;place-items:center;color:#fff;font-weight:1000;letter-spacing:.11em;font-size:24px;margin-bottom:18px;text-align:center}
+.auth-title{margin:0 0 6px;font-size:24px;letter-spacing:-.03em}.auth-subtitle{margin:0 0 18px;color:var(--muted);font-weight:700;font-size:13px;line-height:1.45}.login-form{display:grid;gap:13px}.login-form .field input{font-size:16px}.remember-row{display:flex;align-items:center;gap:9px;color:#475467;font-weight:800;font-size:13px}.remember-row input{width:18px;height:18px}.login-error{min-height:20px;margin:2px 0 0;color:#b42318;font-weight:900;font-size:13px}.auth-note{margin-top:14px;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:11px;color:#667085;font-size:12px;line-height:1.35;font-weight:700}
+
 /* v11: keep title exactly centered while Drive stays on the right */
 .hero.compact-hero{display:flex;flex-direction:row;align-items:center;justify-content:center;text-align:center}
 .hero.compact-hero h1{position:relative;z-index:1;width:100%;padding:0 108px;pointer-events:none}
@@ -74,7 +81,24 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 </head>
 <body class="mobile">
 
-<div class="app-shell">
+<section id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">FUEL TRACKER</div>
+    <h2 class="auth-title">Вход</h2>
+    <p class="auth-subtitle">Въведи потребителско име и парола, за да отвориш приложението на това устройство.</p>
+    <form id="loginForm" class="login-form" autocomplete="on">
+      <label class="field"><span>Username</span><input id="loginUsername" type="text" autocomplete="username" placeholder="Username" required></label>
+      <label class="field"><span>Password</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required></label>
+      <label class="remember-row"><input id="rememberDevice" type="checkbox" checked> Запомни това устройство</label>
+      <p id="loginError" class="login-error"></p>
+      <button class="primary" type="submit">Вход</button>
+    </form>
+    <div class="auth-note">Login: <strong>Svetlicha</strong> / <strong>svetliN88</strong>.</div>
+  </div>
+</section>
+
+
+<div id="appShell" class="app-shell" hidden>
   <header class="hero compact-hero">
     <h1>FUEL TRACKER</h1>
     <div class="hero-actions">
@@ -215,6 +239,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
       <button id="saveDriveSettingsBtn" class="primary" type="button">Запази Drive URL</button>
       <button id="saveDriveBtn" class="ghost" type="button">Запиши сега в Drive</button>
       <button id="loadDriveBtn" class="ghost" type="button">Зареди от Drive</button>
+      <button id="logoutBtn" class="danger" type="button">Изход</button>
     </div>
     <p id="syncStatus" class="sync-status">Google Drive синхронизацията е винаги включена, когато има въведен или вграден Web App URL.</p>
     <div class="sync-help"><strong>Ако пак виждаш “Failed to fetch”:</strong> провери дали Apps Script е Deploy → Web app, “Execute as: Me”, “Who has access: Anyone with the link”, и дали URL адресът е новият <strong>/exec</strong> адрес, не <strong>/dev</strong>.</div>
@@ -236,7 +261,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
   </section>
 </div>
 
-<nav class="month-nav" aria-label="Месеци">
+<nav id="monthNav" class="month-nav" aria-label="Месеци" hidden>
   <div class="month-nav-title">Месеци</div>
   <div id="monthRail" class="month-rail"></div>
 </nav>
@@ -244,6 +269,11 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 <script>
 const STORAGE_KEY = "fuel_manual_tracker_v4";
 const SETTINGS_KEY = "fuel_manual_tracker_settings_v4";
+const AUTH_REMEMBER_KEY = "fuel_tracker_auth_remember_v19";
+const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v19";
+const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v19";
+const APP_LOGIN_USERNAME = "Svetlicha";
+const APP_LOGIN_PASSWORD = "svetliN88";
 // По желание можеш да поставиш тук твоя Apps Script Web App URL (/exec), за да бъде вграден в HTML файла.
 // Ако остане празно, приложението ще използва URL адреса, записан от Google Drive панела.
 const EMBEDDED_DRIVE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzwqd8DU2e2ThyD3d-HOQPsk1LDzomHs42Mtfht-8T5SJZEbIdWa_iwjDgSzwDOjo17/exec";
@@ -261,6 +291,7 @@ let editingId = null;
 let pickerMonth = new Date();
 let settings = { driveUrl: EMBEDDED_DRIVE_WEB_APP_URL, autoSync: true, preferRemoteOnStart: true, driveCompatibilityMode: true };
 let syncTimer = null;
+let appBooted = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -356,7 +387,7 @@ function normalizeDataPayload(data){
 function dataPayload(){
   return {
     app: "fuel-tracker-manual",
-    version: 7,
+    version: 18,
     savedAt: new Date().toISOString(),
     entries
   };
@@ -439,7 +470,7 @@ function updatePrice(){
   const liters = parseNumber($('liters').value);
   const total = parseNumber($('total').value);
   const price = liters > 0 && total > 0 ? total / liters : 0;
-  $('pricePerLiter').value = price ? fmtNum(price, 3) + ' €/л' : '—';
+  $('pricePerLiter').value = price ? fmtNum(price, 2) + ' €/л' : '—';
 }
 function setDate(iso, shouldRenderPicker=true){
   $('dateIso').value = iso;
@@ -898,7 +929,7 @@ function renderEntries(stats){
       <div class="entry-main">
         <div>
           <div class="entry-date">${fmtDate(e.date)} · ${escapeHtml(e.station || '—')}</div>
-          <div class="entry-meta">${fuelBadge(e.fuelType)} <span>${fmtNum(e.liters,2)} л</span> <span>${fmtMoney(e.total)}</span> <span>${fmtNum(e.pricePerLiter,3)} €/л</span></div>
+          <div class="entry-meta">${fuelBadge(e.fuelType)} <span>${fmtNum(e.liters,2)} л</span> <span>${fmtMoney(e.total)}</span> <span>${fmtNum(e.pricePerLiter,2)} €/л</span></div>
         </div>
         <div class="entry-odo">
           <strong>${fmtInt(e.odometer)} км</strong>
@@ -961,7 +992,7 @@ function renderDayDetails(dayEntries){
   const rows = dayEntries.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
   wrap.innerHTML = rows.map(e => `<div class="day-detail-card">
     <div>${fuelBadge(e.fuelType)} <strong>${escapeHtml(e.station || '—')}</strong></div>
-    <div class="day-detail-stats"><span>${fmtNum(e.liters,2)} л</span><span>${fmtMoney(e.total)}</span><span>${fmtNum(e.pricePerLiter,3)} €/л</span><span>${fmtInt(e.odometer)} км</span></div>
+    <div class="day-detail-stats"><span>${fmtNum(e.liters,2)} л</span><span>${fmtMoney(e.total)}</span><span>${fmtNum(e.pricePerLiter,2)} €/л</span><span>${fmtInt(e.odometer)} км</span></div>
   </div>`).join('');
 }
 function shiftSelectedMonth(delta){
@@ -984,7 +1015,59 @@ function render(){
   $('totalRecords').textContent = entries.length;
   updateDriveUI();
 }
+
+function isAuthenticated(){
+  return localStorage.getItem(AUTH_REMEMBER_KEY) === '1' || sessionStorage.getItem(AUTH_SESSION_KEY) === '1';
+}
+function showLogin(){
+  const auth = $('authScreen');
+  const app = $('appShell');
+  const nav = $('monthNav');
+  if (auth) auth.hidden = false;
+  if (app) app.hidden = true;
+  if (nav) nav.hidden = true;
+  setTimeout(() => $('loginUsername')?.focus(), 60);
+}
+function showApp(){
+  const auth = $('authScreen');
+  const app = $('appShell');
+  const nav = $('monthNav');
+  if (auth) auth.hidden = true;
+  if (app) app.hidden = false;
+  if (nav) nav.hidden = false;
+}
+function handleLogin(evt){
+  evt.preventDefault();
+  const user = String($('loginUsername')?.value || '').trim();
+  const pass = String($('loginPassword')?.value || '');
+  const ok = user === APP_LOGIN_USERNAME && pass === APP_LOGIN_PASSWORD;
+  if (!ok) {
+    $('loginError').textContent = 'Грешен username или password.';
+    return;
+  }
+  localStorage.setItem(LOGIN_LAST_USER_KEY, user);
+  if ($('rememberDevice')?.checked) localStorage.setItem(AUTH_REMEMBER_KEY, '1');
+  else sessionStorage.setItem(AUTH_SESSION_KEY, '1');
+  $('loginError').textContent = '';
+  showApp();
+  boot();
+}
+function logout(){
+  localStorage.removeItem(AUTH_REMEMBER_KEY);
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  location.reload();
+}
+function initAuth(){
+  $('loginForm')?.addEventListener('submit', handleLogin);
+  const lastUser = localStorage.getItem(LOGIN_LAST_USER_KEY) || APP_LOGIN_USERNAME;
+  if ($('loginUsername')) $('loginUsername').value = lastUser;
+  if (isAuthenticated()) { showApp(); boot(); }
+  else showLogin();
+}
+
 async function boot(){
+  if (appBooted) return;
+  appBooted = true;
   loadLocal();
   renderStationDatalist();
   setDate(todayISO(), false);
@@ -1017,6 +1100,7 @@ async function boot(){
   $('saveDriveSettingsBtn').addEventListener('click', saveDriveSettings);
   $('loadDriveBtn').addEventListener('click', () => loadFromDrive(true));
   $('saveDriveBtn').addEventListener('click', () => saveToDrive(true));
+  $('logoutBtn')?.addEventListener('click', logout);
   $('prevCalendarMonth').addEventListener('click', () => shiftSelectedMonth(-1));
   $('nextCalendarMonth').addEventListener('click', () => shiftSelectedMonth(1));
   document.querySelectorAll('.fuel-option').forEach(btn => btn.addEventListener('click', () => setFuelType(btn.dataset.type)));
@@ -1024,7 +1108,7 @@ async function boot(){
   if (getDriveUrl()) await loadFromDrive(false);
 }
 
-document.addEventListener('DOMContentLoaded', boot);
+document.addEventListener('DOMContentLoaded', initAuth);
 window.editEntry = editEntry;
 window.deleteEntry = deleteEntry;
 </script>
