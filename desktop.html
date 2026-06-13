@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Fuel Tracker Manual v18 Desktop</title>
+  <title>Fuel Tracker Manual v20 Desktop</title>
   
   <style>
 :root{
@@ -85,7 +85,6 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
   <div class="auth-card">
     <div class="auth-logo">FUEL TRACKER</div>
     <h2 class="auth-title">Вход</h2>
-    <p class="auth-subtitle">Въведи потребителско име и парола, за да отвориш приложението на това устройство.</p>
     <form id="loginForm" class="login-form" autocomplete="on">
       <label class="field"><span>Username</span><input id="loginUsername" type="text" autocomplete="username" placeholder="Username" required></label>
       <label class="field"><span>Password</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required></label>
@@ -93,7 +92,6 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
       <p id="loginError" class="login-error"></p>
       <button class="primary" type="submit">Вход</button>
     </form>
-    <div class="auth-note">Login: <strong>Svetlicha</strong> / <strong>svetliN88</strong>.</div>
   </div>
 </section>
 
@@ -269,9 +267,9 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 <script>
 const STORAGE_KEY = "fuel_manual_tracker_v4";
 const SETTINGS_KEY = "fuel_manual_tracker_settings_v4";
-const AUTH_REMEMBER_KEY = "fuel_tracker_auth_remember_v19";
-const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v19";
-const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v19";
+const AUTH_REMEMBER_KEY = "fuel_tracker_auth_remember_v20";
+const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v20";
+const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v20";
 const APP_LOGIN_USERNAME = "Svetlicha";
 const APP_LOGIN_PASSWORD = "svetliN88";
 // По желание можеш да поставиш тук твоя Apps Script Web App URL (/exec), за да бъде вграден в HTML файла.
