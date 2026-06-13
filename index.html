@@ -59,6 +59,26 @@ body.mobile .drive-toggle{width:100%;justify-content:center}.hero.compact-hero .
 @media (max-width: 430px){.hero.compact-hero{justify-content:flex-start;padding-left:16px}.hero.compact-hero h1{font-size:19px}.hero.compact-hero .drive-toggle span{display:none}.hero.compact-hero .drive-toggle{padding:8px}} 
 
 
+
+/* v21: login overlay, password eye, price stats and bottom logout */
+.auth-screen[hidden], .app-shell[hidden], .month-nav[hidden]{display:none!important}
+.password-wrap{position:relative;display:flex;align-items:center}
+.password-wrap input{padding-right:50px!important;width:100%}
+.eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:12px;background:#eef2f7;color:#344054;font-size:18px;font-weight:1000;display:grid;place-items:center;cursor:pointer}
+.eye-btn:hover{background:#e2e8f0}
+.fuel-price-table{display:grid;gap:10px}
+.fuel-price-head,.fuel-price-row{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:10px;align-items:stretch}
+.fuel-price-head{color:#667085;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em;padding:0 4px}
+.fuel-price-cell{border:1px solid var(--line);background:#fff;border-radius:18px;padding:12px;box-shadow:0 10px 24px rgba(15,23,42,.05)}
+.fuel-price-cell.month{background:#f8fafc;font-weight:1000;color:#0f172a}
+.fuel-price-cell strong{display:block;font-size:20px;letter-spacing:-.03em}
+.fuel-price-cell small{display:block;color:#667085;font-weight:800;margin-top:3px}
+.fuel-price-cell.lpg strong{color:#079455}.fuel-price-cell.a95 strong{color:#b54708}
+.logout-panel{text-align:center;margin-bottom:108px}
+.logout-bottom-btn{width:min(420px,100%);font-size:16px;padding:15px 18px;border-radius:18px}
+.logout-panel .hint{margin:10px 0 0}
+@media (max-width:640px){.fuel-price-head{display:none}.fuel-price-row{grid-template-columns:1fr}.fuel-price-cell{padding:11px}.fuel-price-cell strong{font-size:18px}.logout-panel{margin-bottom:122px}}
+
 /* v18: simple login screen */
 .auth-screen{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at top left,#eaf3ff 0,#f7f9fc 34%,#eef2f7 100%)}
 .auth-card{width:min(440px,100%);background:rgba(255,255,255,.95);border:1px solid rgba(226,232,240,.95);border-radius:28px;box-shadow:var(--shadow);padding:24px;backdrop-filter:blur(10px)}
@@ -87,7 +107,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
     <h2 class="auth-title">Вход</h2>
     <form id="loginForm" class="login-form" autocomplete="on">
       <label class="field"><span>Username</span><input id="loginUsername" type="text" autocomplete="username" placeholder="Username" required></label>
-      <label class="field"><span>Password</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required></label>
+      <label class="field"><span>Password</span><div class="password-wrap"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required><button id="togglePasswordBtn" class="eye-btn" type="button" aria-label="Покажи паролата" title="Покажи паролата">👁</button></div></label>
       <label class="remember-row"><input id="rememberDevice" type="checkbox" checked> Запомни това устройство</label>
       <p id="loginError" class="login-error"></p>
       <button class="primary" type="submit">Вход</button>
@@ -257,6 +277,21 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
     </div>
     <div id="entriesList" class="entries-list"></div>
   </section>
+
+  <section class="panel fuel-price-panel">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">Статистика цена на горива</p>
+        <h2>Средна цена по месеци</h2>
+      </div>
+    </div>
+    <div id="fuelPriceStats" class="fuel-price-table"></div>
+  </section>
+
+  <section class="panel logout-panel">
+    <button id="bottomLogoutBtn" class="danger logout-bottom-btn" type="button">Изход</button>
+    <p class="hint">След изход това устройство вече няма да остане логнато.</p>
+  </section>
 </div>
 
 <nav id="monthNav" class="month-nav" aria-label="Месеци" hidden>
@@ -267,9 +302,9 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 <script>
 const STORAGE_KEY = "fuel_manual_tracker_v4";
 const SETTINGS_KEY = "fuel_manual_tracker_settings_v4";
-const AUTH_REMEMBER_KEY = "fuel_tracker_auth_remember_v20";
-const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v20";
-const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v20";
+const AUTH_REMEMBER_KEY = "fuel_tracker_auth_remember_v21";
+const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v21";
+const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v21";
 const APP_LOGIN_USERNAME = "Svetlicha";
 const APP_LOGIN_PASSWORD = "svetliN88";
 // По желание можеш да поставиш тук твоя Apps Script Web App URL (/exec), за да бъде вграден в HTML файла.
@@ -385,7 +420,7 @@ function normalizeDataPayload(data){
 function dataPayload(){
   return {
     app: "fuel-tracker-manual",
-    version: 18,
+    version: 21,
     savedAt: new Date().toISOString(),
     entries
   };
@@ -941,6 +976,47 @@ function renderEntries(stats){
       </div>
     </article>`).join('');
 }
+function fuelPriceMonthlyRows(){
+  const map = new Map();
+  entries.forEach(e => {
+    const key = monthKey(e.date);
+    if (!map.has(key)) map.set(key, { LPG:{liters:0,total:0,count:0}, A95:{liters:0,total:0,count:0} });
+    const type = e.fuelType === 'A95' ? 'A95' : 'LPG';
+    const row = map.get(key)[type];
+    row.liters += parseNumber(e.liters);
+    row.total += parseNumber(e.total);
+    row.count += 1;
+  });
+  return [...map.entries()].sort((a,b)=>b[0].localeCompare(a[0])).map(([key, data]) => {
+    data.LPG.avg = data.LPG.liters > 0 ? data.LPG.total / data.LPG.liters : null;
+    data.A95.avg = data.A95.liters > 0 ? data.A95.total / data.A95.liters : null;
+    return { key, ...data };
+  });
+}
+function fuelPriceCell(type, data){
+  const cls = type === 'A95' ? 'a95' : 'lpg';
+  const name = type === 'A95' ? 'A95 / Бензин' : 'LPG / Газ';
+  if (!data || !Number.isFinite(data.avg)) {
+    return `<div class="fuel-price-cell ${cls}"><strong>—</strong><small>${name}</small></div>`;
+  }
+  return `<div class="fuel-price-cell ${cls}"><strong>${fmtNum(data.avg,2)} €/л</strong><small>${name} · ${fmtNum(data.liters,2)} л · ${data.count} зар.</small></div>`;
+}
+function renderFuelPriceStats(){
+  const wrap = $('fuelPriceStats');
+  if (!wrap) return;
+  const rows = fuelPriceMonthlyRows();
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="empty-inline">Няма достатъчно записи за статистика на цена на горива.</div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="fuel-price-head"><span>Месец</span><span>LPG / Газ</span><span>A95 / Бензин</span></div>` + rows.map(r => `
+    <div class="fuel-price-row">
+      <div class="fuel-price-cell month"><strong>${monthShortLabel(r.key)}</strong><small>${monthLabel(r.key)}</small></div>
+      ${fuelPriceCell('LPG', r.LPG)}
+      ${fuelPriceCell('A95', r.A95)}
+    </div>`).join('');
+}
+
 function markerPrice(e){
   const saved = parseNumber(e.pricePerLiter);
   if (saved > 0) return saved;
@@ -1010,8 +1086,20 @@ function render(){
   renderMonths();
   renderCalendar();
   renderEntries(stats);
+  renderFuelPriceStats();
   $('totalRecords').textContent = entries.length;
   updateDriveUI();
+}
+
+function togglePasswordVisibility(){
+  const input = $('loginPassword');
+  const btn = $('togglePasswordBtn');
+  if (!input || !btn) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+  btn.setAttribute('aria-label', show ? 'Скрий паролата' : 'Покажи паролата');
+  btn.title = show ? 'Скрий паролата' : 'Покажи паролата';
 }
 
 function isAuthenticated(){
@@ -1021,18 +1109,18 @@ function showLogin(){
   const auth = $('authScreen');
   const app = $('appShell');
   const nav = $('monthNav');
-  if (auth) auth.hidden = false;
-  if (app) app.hidden = true;
-  if (nav) nav.hidden = true;
+  if (auth) { auth.hidden = false; auth.style.display = 'grid'; }
+  if (app) { app.hidden = true; app.style.display = 'none'; }
+  if (nav) { nav.hidden = true; nav.style.display = 'none'; }
   setTimeout(() => $('loginUsername')?.focus(), 60);
 }
 function showApp(){
   const auth = $('authScreen');
   const app = $('appShell');
   const nav = $('monthNav');
-  if (auth) auth.hidden = true;
-  if (app) app.hidden = false;
-  if (nav) nav.hidden = false;
+  if (auth) { auth.hidden = true; auth.style.display = 'none'; }
+  if (app) { app.hidden = false; app.style.display = ''; }
+  if (nav) { nav.hidden = false; nav.style.display = ''; }
 }
 function handleLogin(evt){
   evt.preventDefault();
@@ -1057,6 +1145,7 @@ function logout(){
 }
 function initAuth(){
   $('loginForm')?.addEventListener('submit', handleLogin);
+  $('togglePasswordBtn')?.addEventListener('click', togglePasswordVisibility);
   const lastUser = localStorage.getItem(LOGIN_LAST_USER_KEY) || APP_LOGIN_USERNAME;
   if ($('loginUsername')) $('loginUsername').value = lastUser;
   if (isAuthenticated()) { showApp(); boot(); }
@@ -1099,6 +1188,7 @@ async function boot(){
   $('loadDriveBtn').addEventListener('click', () => loadFromDrive(true));
   $('saveDriveBtn').addEventListener('click', () => saveToDrive(true));
   $('logoutBtn')?.addEventListener('click', logout);
+  $('bottomLogoutBtn')?.addEventListener('click', logout);
   $('prevCalendarMonth').addEventListener('click', () => shiftSelectedMonth(-1));
   $('nextCalendarMonth').addEventListener('click', () => shiftSelectedMonth(1));
   document.querySelectorAll('.fuel-option').forEach(btn => btn.addEventListener('click', () => setFuelType(btn.dataset.type)));
