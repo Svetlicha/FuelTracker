@@ -106,6 +106,19 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .day-detail-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 @media(max-width:720px){.station-logo-badge{height:28px;max-width:86px;padding:3px 7px}.station-logo-badge img{max-height:20px;max-width:70px}}
 
+/* Scroll performance: avoid expensive blur/paint work while keeping the same layout. */
+.panel,.auth-card{background:#fff;backdrop-filter:none}
+.month-nav{background:rgba(15,23,42,.96);backdrop-filter:none;box-shadow:0 8px 24px rgba(15,23,42,.18)}
+.hero{box-shadow:0 10px 28px rgba(15,23,42,.10)}
+.primary,.car-chip,.drive-toggle,.drive-icon-status,.station-logo-badge,.fuel-price-cell,.fuel-marker{box-shadow:none}
+.calendar-day,.fuel-option,.field input,.field select{transition:border-color .12s ease,background-color .12s ease}
+@media (max-width:640px){
+  :root{--shadow:0 8px 18px rgba(15,23,42,.08)}
+  body{background:#f4f7fb}
+  .panel,.auth-card{box-shadow:var(--shadow)}
+  .calendar-day.selected{box-shadow:0 0 0 2px rgba(31,111,235,.14)}
+}
+
 </style>
 </head>
 <body class="desktop">
