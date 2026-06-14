@@ -1,11 +1,18 @@
-const CACHE_NAME = 'fuel-tracker-pwa-v13-ready';
+const CACHE_NAME = 'fuel-tracker-v24';
 const FILES = [
   './',
   './index.html',
   './desktop.html',
   './manifest.webmanifest',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './assets/stations/tomi-oil.png',
+  './assets/stations/shell.png',
+  './assets/stations/omv.png',
+  './assets/stations/eko.png',
+  './assets/stations/rompetrol.png',
+  './assets/stations/petrol.png',
+  './assets/stations/lukoil.png'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).catch(() => null));
