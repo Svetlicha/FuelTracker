@@ -233,7 +233,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
       <div class="stat-grid">
         <div class="stat-card money"><span>Пари за месеца</span><strong id="monthMoney">0.00 €</strong><small id="monthCount">0 зареждания</small></div>
         <div class="stat-card"><span>Литри за месеца</span><strong id="monthLiters">0.00 л</strong><small>LPG + A95</small></div>
-        <div class="stat-card"><span>Изминати километри</span><strong id="monthKm">0 км</strong><small>по километраж</small></div>
+        <div class="stat-card"><span>Изминати километри</span><strong id="monthKm">0 км</strong><small>по LPG интервали</small></div>
         <div class="stat-card highlight"><span>Разход</span><strong id="monthConsumption">—</strong><small id="monthCostPer100">—</small></div>
       </div>
 
@@ -542,9 +542,11 @@ function calculateStats(month=null){
   const filtered = month ? rows.filter(e => monthKey(e.date) === month) : rows;
   const totalSum = filtered.reduce((s,e)=>s + parseNumber(e.total), 0);
   const totalLiters = filtered.reduce((s,e)=>s + parseNumber(e.liters), 0);
-  const km = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? e.kmDelta : 0), 0);
-  const litersForConsumption = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? parseNumber(e.liters) : 0), 0);
-  const sumForConsumption = filtered.reduce((s,e)=>s + (Number.isFinite(e.kmDelta) ? parseNumber(e.total) : 0), 0);
+  const hasValidKmDelta = (e) => Number.isFinite(e.kmDelta) && e.kmDelta > 0;
+  const countsForConsumptionFuel = (e) => e.fuelType === 'A95' || (e.fuelType === 'LPG' && hasValidKmDelta(e));
+  const km = filtered.reduce((s,e)=>s + (e.fuelType === 'LPG' && hasValidKmDelta(e) ? e.kmDelta : 0), 0);
+  const litersForConsumption = filtered.reduce((s,e)=>s + (countsForConsumptionFuel(e) ? parseNumber(e.liters) : 0), 0);
+  const sumForConsumption = filtered.reduce((s,e)=>s + (countsForConsumptionFuel(e) ? parseNumber(e.total) : 0), 0);
   const byType = {
     LPG: filtered.filter(e=>e.fuelType==='LPG').reduce((acc,e)=>({liters: acc.liters+parseNumber(e.liters), total: acc.total+parseNumber(e.total)}), {liters:0,total:0}),
     A95: filtered.filter(e=>e.fuelType==='A95').reduce((acc,e)=>({liters: acc.liters+parseNumber(e.liters), total: acc.total+parseNumber(e.total)}), {liters:0,total:0})
@@ -1012,8 +1014,8 @@ function renderStatCards(stats, overall){
     <div><strong>${overall.consumption ? fmtNum(overall.consumption,2) + ' л/100 км' : '—'}</strong><span>среден разход</span></div>
   `;
   const hint = stats.count && !stats.km
-    ? 'За разход/100 км са нужни поне два записа от един и същ тип гориво с нарастващ километраж.'
-    : 'Километрите се смятат от предното зареждане от същия тип: LPG → предно LPG, A95 → предно A95. Така бензинът не се брои към газта.';
+    ? 'За общия разход са нужни поне два LPG записа с нарастващ километраж.'
+    : 'Общият разход ползва LPG километри, а горивото включва газ и бензин.';
   $('calcHint').textContent = hint;
 }
 function renderMonths(){
