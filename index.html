@@ -178,7 +178,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
           <label class="field date-field" id="datePickerWrap">
             <span>Дата</span>
             <div class="date-input-row">
-              <input id="dateDisplay" type="text" inputmode="numeric" placeholder="ДД/ММ/ГГГГ" required>
+              <input id="dateDisplay" type="text" inputmode="numeric" placeholder="ДД.ММ.ГГГГ" required>
               <button type="button" class="today-mini" onclick="setDate(todayISO(), true)">Днес</button>
             </div>
             <input id="dateIso" type="hidden">
@@ -402,7 +402,7 @@ function fmtMoney(n){ return `${fmtNum(n,2)} €`; }
 function fmtDate(iso){
   if(!iso) return "—";
   const [y,m,d] = iso.split('-');
-  return `${d}/${m}/${y}`;
+  return `${d}.${m}.${y}`;
 }
 function parseDisplayDate(value){
   const m = String(value || '').trim().match(/^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})$/);
