@@ -1302,26 +1302,31 @@ function renderCarProfiles(){
       <small>${value ? escapeHtml(fmtDate(value)) : escapeHtml(status.label)}</small>
     </button>`;
   }).join('') + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">
-    <label><span>${escapeHtml(currentDoc.title)}</span><input id="carDocDateInput" type="text" inputmode="numeric" placeholder="ДД.ММ.ГГГГ" value="${escapeHtml(current.documents?.[currentDoc.key] ? fmtDate(current.documents[currentDoc.key]) : '')}"></label>
+    <label><span>${escapeHtml(currentDoc.title)}</span><input id="carDocDateInput" type="date" value="${escapeHtml(current.documents?.[currentDoc.key] || '')}"></label>
     <button id="saveCarDocBtn" class="primary small" type="button">Запази</button>
   </div>` : '');
   docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
     btn.addEventListener('click', () => {
       activeCarDocumentKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
       renderCarProfiles();
-      setTimeout(() => $('carDocDateInput')?.focus(), 0);
+      setTimeout(() => {
+        const input = $('carDocDateInput');
+        input?.focus();
+        try { input?.showPicker?.(); } catch(e) {}
+      }, 0);
     });
   });
   $('saveCarDocBtn')?.addEventListener('click', () => saveCarDocument(activeCarDocumentKey, $('carDocDateInput')?.value));
+  $('carDocDateInput')?.addEventListener('change', (evt) => saveCarDocument(activeCarDocumentKey, evt.currentTarget.value));
   $('carDocDateInput')?.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Enter') { evt.preventDefault(); saveCarDocument(activeCarDocumentKey, evt.currentTarget.value); }
+    if (evt.key !== 'Tab') evt.preventDefault();
   });
 }
 function saveCarDocument(key, value){
   const car = activeCar();
   if (!car || !CAR_DOCUMENTS.some(doc => doc.key === key)) return;
   const raw = String(value || '').trim();
-  const parsed = raw ? parseDisplayDate(raw) : '';
+  const parsed = raw ? (/^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : parseDisplayDate(raw)) : '';
   if (raw && !parsed) {
     renderCarProfiles();
     return;
