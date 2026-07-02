@@ -122,6 +122,17 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .car-doc-icon img{display:block;width:auto!important;height:auto!important;max-width:82px!important;max-height:74px!important;object-fit:contain;transform:none!important}
 .car-doc-tile.due-soon{background:#ffd27a;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.55),0 0 34px rgba(245,158,11,.82),0 0 12px rgba(245,158,11,.55) inset}
 .car-doc-tile.due-urgent,.car-doc-tile.expired{background:#ffb3b8;border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.58),0 0 38px rgba(239,68,68,.86),0 0 14px rgba(239,68,68,.55) inset}
+.car-doc-editor{grid-template-columns:1fr;padding:14px}
+.car-doc-calendar{display:grid;gap:10px}
+.car-doc-calendar-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}
+.car-doc-calendar-top strong{text-align:center;font-size:14px;line-height:1.2}
+.car-doc-calendar-top strong span{display:block;color:#667085;font-size:12px;margin-top:2px}
+.car-doc-calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.car-doc-weekday{text-align:center;color:#667085;font-size:11px;font-weight:1000;padding:3px 0}
+.car-doc-day{height:32px;border:0;border-radius:10px;background:#f8fafc;color:#111827;font-weight:900}
+.car-doc-day.muted{color:#b4bfcc;background:#fff}
+.car-doc-day.today{outline:2px solid rgba(31,111,235,.30)}
+.car-doc-day.selected{background:#1f6feb;color:#fff}
 
 </style>
 </head>
@@ -379,6 +390,7 @@ let settings = { driveUrl: EMBEDDED_DRIVE_WEB_APP_URL, autoSync: true, preferRem
 let syncTimer = null;
 let appBooted = false;
 let activeCarDocumentKey = null;
+let carDocumentPickerMonth = new Date();
 
 const $ = (id) => document.getElementById(id);
 
@@ -482,6 +494,28 @@ function documentStatus(iso){
 function carDocumentIcon(doc){
   if (doc.icon) return `<span class="car-doc-icon ${escapeHtml(doc.key)}"><img src="${escapeHtml(doc.icon)}" alt=""></span>`;
   return `<span class="car-doc-icon"><span class="car-doc-letter">${escapeHtml(doc.iconText || doc.label)}</span></span>`;
+}
+function renderCarDocumentCalendar(doc, selectedDate){
+  const y = carDocumentPickerMonth.getFullYear();
+  const m = carDocumentPickerMonth.getMonth();
+  const first = new Date(y, m, 1);
+  const firstMondayIndex = (first.getDay() + 6) % 7;
+  const start = new Date(y, m, 1 - firstMondayIndex);
+  const today = todayISO();
+  let grid = WEEK_DAYS.map(d => `<div class="car-doc-weekday">${d}</div>`).join('');
+  for (let i=0; i<42; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    grid += `<button type="button" class="car-doc-day ${d.getMonth()!==m?'muted':''} ${iso===selectedDate?'selected':''} ${iso===today?'today':''}" data-car-doc-date="${iso}">${d.getDate()}</button>`;
+  }
+  return `<div class="car-doc-calendar">
+    <div class="car-doc-calendar-top">
+      <button type="button" class="round-btn" data-car-doc-shift="-1">‹</button>
+      <strong>${escapeHtml(doc.title)}<span>${BG_MONTHS[m]} ${y}</span></strong>
+      <button type="button" class="round-btn" data-car-doc-shift="1">›</button>
+    </div>
+    <div class="car-doc-calendar-grid">${grid}</div>
+  </div>`;
 }
 
 function loadLocal(){
@@ -1301,26 +1335,22 @@ function renderCarProfiles(){
       ${carDocumentIcon(doc)}
       <small>${value ? escapeHtml(fmtDate(value)) : escapeHtml(status.label)}</small>
     </button>`;
-  }).join('') + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">
-    <label><span>${escapeHtml(currentDoc.title)}</span><input id="carDocDateInput" type="date" value="${escapeHtml(current.documents?.[currentDoc.key] || '')}"></label>
-    <button id="saveCarDocBtn" class="primary small" type="button">Запази</button>
-  </div>` : '');
+  }).join('') + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '');
   docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeCarDocumentKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
+      const nextKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
+      activeCarDocumentKey = nextKey;
+      if (nextKey) carDocumentPickerMonth = parseISO(activeCar().documents?.[nextKey] || todayISO());
       renderCarProfiles();
-      setTimeout(() => {
-        const input = $('carDocDateInput');
-        input?.focus();
-        try { input?.showPicker?.(); } catch(e) {}
-      }, 0);
     });
   });
-  $('saveCarDocBtn')?.addEventListener('click', () => saveCarDocument(activeCarDocumentKey, $('carDocDateInput')?.value));
-  $('carDocDateInput')?.addEventListener('change', (evt) => saveCarDocument(activeCarDocumentKey, evt.currentTarget.value));
-  $('carDocDateInput')?.addEventListener('keydown', (evt) => {
-    if (evt.key !== 'Tab') evt.preventDefault();
+  docGrid.querySelectorAll('[data-car-doc-shift]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      carDocumentPickerMonth = new Date(carDocumentPickerMonth.getFullYear(), carDocumentPickerMonth.getMonth() + Number(btn.dataset.carDocShift), 1);
+      renderCarProfiles();
+    });
   });
+  docGrid.querySelectorAll('[data-car-doc-date]').forEach(btn => btn.addEventListener('click', () => saveCarDocument(activeCarDocumentKey, btn.dataset.carDocDate)));
 }
 function saveCarDocument(key, value){
   const car = activeCar();
