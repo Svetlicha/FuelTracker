@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="bg">
 <head>
   <meta charset="utf-8">
@@ -39,7 +39,7 @@ button{cursor:pointer}
 .layout{display:grid;grid-template-columns:minmax(420px,.9fr) minmax(420px,1.1fr);gap:18px;align-items:start}
 .panel{background:rgba(255,255,255,.92);border:1px solid rgba(226,232,240,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px;backdrop-filter:blur(10px)}
 .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}.section-head h2{margin:0;font-size:22px}.section-head.compact{align-items:center}
-.car-panel{margin:0 0 18px}.car-profile-rail{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}.car-chip{border:1px solid var(--line);background:#fff;color:#344054;border-radius:999px;padding:10px 14px;font-weight:1000;white-space:nowrap;box-shadow:0 8px 18px rgba(15,23,42,.06)}.car-chip.active{background:linear-gradient(135deg,#0f3b78,#1f6feb);border-color:#1f6feb;color:#fff}.car-add-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px}.car-add-row input{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:#fff;color:var(--ink);outline:none}.car-add-row input:focus{border-color:#84b7ff;box-shadow:0 0 0 4px rgba(31,111,235,.12)}.records-pill,.current-pill{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:#475467;font-weight:700;font-size:13px;white-space:nowrap}.records-pill.sync-on{background:#ecfdf3;color:#027a48;border-color:#abefc6}
+.car-panel{margin:0 0 18px}.car-profile-rail{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}.car-chip{border:1px solid var(--line);background:#fff;color:#344054;border-radius:999px;padding:10px 14px;font-weight:1000;white-space:nowrap;box-shadow:0 8px 18px rgba(15,23,42,.06)}.car-chip.active{background:linear-gradient(135deg,#0f3b78,#1f6feb);border-color:#1f6feb;color:#fff}.car-add-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px}.car-add-row input{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:#fff;color:var(--ink);outline:none}.car-add-row input:focus{border-color:#84b7ff;box-shadow:0 0 0 4px rgba(31,111,235,.12)}.car-doc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;max-width:420px}.car-doc-tile{aspect-ratio:1/1;border:1px solid #d8e0ec;background:linear-gradient(180deg,#fff,#f8fafc);border-radius:18px;padding:8px;display:grid;grid-template-rows:1fr auto;gap:5px;place-items:center;text-align:center;color:#0f172a;min-width:0;box-shadow:0 8px 18px rgba(15,23,42,.05)}.car-doc-tile.active{border-color:#1f6feb;box-shadow:0 0 0 3px rgba(31,111,235,.12),0 10px 22px rgba(15,23,42,.08);background:#fff}.car-doc-tile.due-soon{background:linear-gradient(180deg,#fffdf2,#fffbeb);border-color:#fedf89}.car-doc-tile.due-urgent,.car-doc-tile.expired{background:linear-gradient(180deg,#fff8f9,#fff1f2);border-color:#fecdd3}.car-doc-icon{width:72px;height:72px;border-radius:16px;display:grid;place-items:center;overflow:visible;background:#fff;border:1px solid rgba(226,232,240,.95);box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}.car-doc-icon img{width:100%;height:100%;object-fit:contain;object-position:center}.car-doc-icon.insurance img{transform:scale(.94)}.car-doc-icon.inspection img{transform:scale(.94)}.car-doc-icon.vignette img{transform:scale(.92)}.car-doc-letter{font-size:24px;font-weight:1000;color:#1558bd}.car-doc-tile strong{font-size:13px;line-height:1}.car-doc-tile small{color:#667085;font-weight:1000;font-size:11px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis}.car-doc-tile.due-soon small{color:#b54708}.car-doc-tile.due-urgent small,.car-doc-tile.expired small{color:#b42318}.car-doc-editor{margin-top:10px;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.car-doc-editor label{display:grid;gap:6px}.car-doc-editor span{font-size:13px;font-weight:900;color:#344054}.car-doc-editor input{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:900;color:#0f172a;outline:none}.car-doc-editor input:focus{border-color:#84b7ff;box-shadow:0 0 0 4px rgba(31,111,235,.12)}.records-pill,.current-pill{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:#475467;font-weight:700;font-size:13px;white-space:nowrap}.records-pill.sync-on{background:#ecfdf3;color:#027a48;border-color:#abefc6}
 .field-grid{display:grid;gap:14px;margin-bottom:14px}.field-grid.two{grid-template-columns:1fr 1fr}.field-grid.three{grid-template-columns:1fr 1fr 1fr}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field span{font-size:13px;font-weight:800;color:#344054}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:#fff;color:var(--ink);outline:none;transition:.18s ease;font:inherit}.field select{appearance:auto;cursor:pointer}.field input:focus,.field select:focus{border-color:#84b7ff;box-shadow:0 0 0 4px rgba(31,111,235,.12)}.field em{font-style:normal;color:var(--muted);font-size:12px}.field.readonly input{background:#f8fafc;color:#475467;font-weight:800}.date-input-row{display:flex;gap:8px}.date-input-row input{flex:1}.today-mini{border:0;border-radius:14px;background:var(--soft);color:#1558bd;font-weight:900;padding:0 14px}
 .date-picker{position:absolute;top:82px;left:0;z-index:20;width:min(360px,92vw);background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 26px 80px rgba(15,23,42,.18);padding:14px}.picker-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.round-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#f8fafc;font-size:24px;font-weight:900;color:#1f2937}.picker-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.picker-weekday{text-align:center;color:#667085;font-weight:900;font-size:12px;padding:6px 0}.picker-day{height:38px;border:0;border-radius:12px;background:#f8fafc;color:#111827;font-weight:800}.picker-day.muted{color:#b4bfcc;background:#fff}.picker-day.today{outline:2px solid rgba(31,111,235,.35)}.picker-day.selected{background:#1f6feb;color:#fff}.picker-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
 .fuel-picker{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 16px}.fuel-option{border:2px solid transparent;border-radius:22px;padding:14px;text-align:left;background:#f8fafc;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"icon title" "icon sub";column-gap:12px;align-items:center;transition:.18s ease}.fuel-option .icon{grid-area:icon;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;font-weight:1000;color:#fff;letter-spacing:-.04em}.fuel-option strong{grid-area:title;font-size:18px}.fuel-option small{grid-area:sub;color:var(--muted);font-weight:700}.fuel-option.lpg .icon{background:var(--lpg)}.fuel-option.a95 .icon{background:var(--a95)}.fuel-option.active{background:#fff;border-color:var(--primary);box-shadow:0 10px 28px rgba(31,111,235,.12)}
@@ -118,6 +118,10 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
   .panel,.auth-card{box-shadow:var(--shadow)}
   .calendar-day.selected{box-shadow:0 0 0 2px rgba(31,111,235,.14)}
 }
+.car-doc-icon{width:82px;height:74px;border:0;background:transparent;box-shadow:none;overflow:visible;border-radius:10px}
+.car-doc-icon img{display:block;width:auto!important;height:auto!important;max-width:82px!important;max-height:74px!important;object-fit:contain;transform:none!important}
+.car-doc-tile.due-soon{background:#ffd27a;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.55),0 0 34px rgba(245,158,11,.82),0 0 12px rgba(245,158,11,.55) inset}
+.car-doc-tile.due-urgent,.car-doc-tile.expired{background:#ffb3b8;border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.58),0 0 38px rgba(239,68,68,.86),0 0 14px rgba(239,68,68,.55) inset}
 
 </style>
 </head>
@@ -160,7 +164,8 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
       <input id="newCarName" type="text" placeholder="Напиши автомобил, напр. VW Golf">
       <button id="addCarBtn" class="ghost small" type="button">Добави кола</button>
     </div>
-    <p class="hint">Всички зареждания, статистики и календар се показват само за избрания автомобил.</p>
+    <div id="carDocumentGrid" class="car-doc-grid"></div>
+    <p class="hint">Всички зареждания, статистики, календар и срокове се показват само за избрания автомобил.</p>
   </section>
 
   <main class="layout">
@@ -357,6 +362,11 @@ const STATIONS = [DEFAULT_STATION, "Shell", "OMV", "EKO", "Rompetrol", "Petrol",
 const CAR_PROFILE_KEY = "fuel_manual_tracker_car_profiles_v22";
 const DEFAULT_CAR_ID = "bmw_528i";
 const DEFAULT_CAR_NAME = "BMW 528i";
+const CAR_DOCUMENTS = [
+  { key: 'insurance', label: 'ГО', title: 'Гражданска отговорност', icon: 'assets/documents/go.png' },
+  { key: 'inspection', label: 'ГТП', title: 'Годишен технически преглед', icon: 'assets/documents/gtp.png' },
+  { key: 'vignette', label: 'Винетка', title: 'Винетка', icon: 'assets/documents/vignette.png' }
+];
 
 let entries = [];
 let selectedMonth = monthKey(new Date());
@@ -368,6 +378,7 @@ let pickerMonth = new Date();
 let settings = { driveUrl: EMBEDDED_DRIVE_WEB_APP_URL, autoSync: true, preferRemoteOnStart: true, driveCompatibilityMode: true };
 let syncTimer = null;
 let appBooted = false;
+let activeCarDocumentKey = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -426,11 +437,19 @@ function slugCarName(name){
   const base = String(name || '').trim().toLowerCase().replace(/[^a-z0-9а-яё]+/giu, '_').replace(/^_+|_+$/g, '');
   return (base || 'car') + '_' + Math.random().toString(16).slice(2,8);
 }
+function normalizeCarDocuments(documents){
+  const source = documents && typeof documents === 'object' ? documents : {};
+  return CAR_DOCUMENTS.reduce((acc, doc) => {
+    const value = String(source[doc.key] || '').trim();
+    acc[doc.key] = /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
+    return acc;
+  }, {});
+}
 function normalizeCarProfile(c){
   if (!c) return null;
   const name = String(c.name || '').trim();
   if (!name) return null;
-  return { id: String(c.id || slugCarName(name)), name, createdAt: c.createdAt || new Date().toISOString() };
+  return { id: String(c.id || slugCarName(name)), name, createdAt: c.createdAt || new Date().toISOString(), documents: normalizeCarDocuments(c.documents) };
 }
 function ensureDefaultCar(){
   carProfiles = (Array.isArray(carProfiles) ? carProfiles : []).map(normalizeCarProfile).filter(Boolean);
@@ -445,6 +464,25 @@ function activeCar(){
 }
 function getEntryCarId(e){ return e && e.carId ? String(e.carId) : DEFAULT_CAR_ID; }
 function currentCarEntries(){ return entries.filter(e => getEntryCarId(e) === activeCarId); }
+function daysUntilDate(iso){
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ''))) return null;
+  const target = parseISO(iso);
+  const today = parseISO(todayISO());
+  return Math.ceil((target - today) / 86400000);
+}
+function documentStatus(iso){
+  const days = daysUntilDate(iso);
+  if (days === null) return { className: '', label: 'няма дата' };
+  if (days < 0) return { className: 'expired', label: `изтекло преди ${Math.abs(days)} дни` };
+  if (days === 0) return { className: 'due-urgent', label: 'изтича днес' };
+  if (days <= 7) return { className: 'due-urgent', label: `остават ${days} дни` };
+  if (days <= 30) return { className: 'due-soon', label: `остават ${days} дни` };
+  return { className: '', label: `валидно още ${days} дни` };
+}
+function carDocumentIcon(doc){
+  if (doc.icon) return `<span class="car-doc-icon ${escapeHtml(doc.key)}"><img src="${escapeHtml(doc.icon)}" alt=""></span>`;
+  return `<span class="car-doc-icon"><span class="car-doc-letter">${escapeHtml(doc.iconText || doc.label)}</span></span>`;
+}
 
 function loadLocal(){
   try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
@@ -494,11 +532,22 @@ function normalizeDataPayload(data){
   if (!Array.isArray(imported)) return [];
   return imported.map(normalizeEntry).filter(Boolean);
 }
+function applyCarProfilesPayload(data){
+  if (!data || !Array.isArray(data.carProfiles)) return;
+  const importedProfiles = data.carProfiles.map(normalizeCarProfile).filter(Boolean);
+  if (!importedProfiles.length) return;
+  carProfiles = importedProfiles;
+  if (data.activeCarId) activeCarId = String(data.activeCarId);
+  ensureDefaultCar();
+}
 function dataPayload(){
+  ensureDefaultCar();
   return {
     app: "fuel-tracker-manual",
-    version: 21,
+    version: 22,
     savedAt: new Date().toISOString(),
+    carProfiles,
+    activeCarId,
     entries
   };
 }
@@ -773,8 +822,10 @@ function importJson(file){
   const reader = new FileReader();
   reader.onload = () => {
     try {
-      const imported = normalizeDataPayload(JSON.parse(reader.result));
+      const parsed = JSON.parse(reader.result);
+      const imported = normalizeDataPayload(parsed);
       if (!imported.length) throw new Error('Няма entries');
+      applyCarProfilesPayload(parsed);
       const map = new Map(entries.map(e=>[e.id,e]));
       imported.forEach(e => map.set(e.id, e));
       entries = [...map.values()];
@@ -979,8 +1030,10 @@ async function loadFromDrive(manual=false){
         throw err;
       }
     }
-    const remoteEntries = normalizeDataPayload(res.data || res);
+    const remoteData = res.data || res;
+    const remoteEntries = normalizeDataPayload(remoteData);
     if (remoteEntries.length || manual) {
+      applyCarProfilesPayload(remoteData);
       const map = new Map(entries.map(e=>[e.id,e]));
       remoteEntries.forEach(e => map.set(e.id, e));
       entries = [...map.values()];
@@ -1227,17 +1280,57 @@ function ensureStationOption(value){
 function renderCarProfiles(){
   ensureDefaultCar();
   const rail = $('carProfileRail');
+  const docGrid = $('carDocumentGrid');
   const current = activeCar();
   if ($('activeCarTitle')) $('activeCarTitle').textContent = current.name;
-  if (!rail) return;
-  rail.innerHTML = carProfiles.map(c => `<button type="button" class="car-chip ${c.id===activeCarId?'active':''}" data-car-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}</button>`).join('');
-  rail.querySelectorAll('.car-chip').forEach(btn => {
+  if (rail) rail.innerHTML = carProfiles.map(c => `<button type="button" class="car-chip ${c.id===activeCarId?'active':''}" data-car-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}</button>`).join('');
+  rail?.querySelectorAll('.car-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       activeCarId = btn.dataset.carId;
+      activeCarDocumentKey = null;
       saveLocal();
       render();
     });
   });
+  if (!docGrid) return;
+  const currentDoc = CAR_DOCUMENTS.find(doc => doc.key === activeCarDocumentKey);
+  docGrid.innerHTML = CAR_DOCUMENTS.map(doc => {
+    const value = current.documents?.[doc.key] || '';
+    const status = documentStatus(value);
+    return `<button type="button" class="car-doc-tile ${status.className} ${doc.key===activeCarDocumentKey?'active':''}" data-car-doc-open="${doc.key}" aria-label="${escapeHtml(doc.title)}">
+      ${carDocumentIcon(doc)}
+      <small>${value ? escapeHtml(fmtDate(value)) : escapeHtml(status.label)}</small>
+    </button>`;
+  }).join('') + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">
+    <label><span>${escapeHtml(currentDoc.title)}</span><input id="carDocDateInput" type="text" inputmode="numeric" placeholder="ДД.ММ.ГГГГ" value="${escapeHtml(current.documents?.[currentDoc.key] ? fmtDate(current.documents[currentDoc.key]) : '')}"></label>
+    <button id="saveCarDocBtn" class="primary small" type="button">Запази</button>
+  </div>` : '');
+  docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCarDocumentKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
+      renderCarProfiles();
+      setTimeout(() => $('carDocDateInput')?.focus(), 0);
+    });
+  });
+  $('saveCarDocBtn')?.addEventListener('click', () => saveCarDocument(activeCarDocumentKey, $('carDocDateInput')?.value));
+  $('carDocDateInput')?.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Enter') { evt.preventDefault(); saveCarDocument(activeCarDocumentKey, evt.currentTarget.value); }
+  });
+}
+function saveCarDocument(key, value){
+  const car = activeCar();
+  if (!car || !CAR_DOCUMENTS.some(doc => doc.key === key)) return;
+  const raw = String(value || '').trim();
+  const parsed = raw ? parseDisplayDate(raw) : '';
+  if (raw && !parsed) {
+    renderCarProfiles();
+    return;
+  }
+  car.documents = normalizeCarDocuments({ ...car.documents, [key]: parsed });
+  saveLocal();
+  activeCarDocumentKey = null;
+  renderCarProfiles();
+  scheduleDriveSave();
 }
 function addCarProfile(){
   const input = $('newCarName');
