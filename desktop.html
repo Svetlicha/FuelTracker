@@ -1041,7 +1041,12 @@ async function driveRequest(payload){
     e.code = 'FETCH_FAILED';
     throw e;
   }
-  if (!res.ok) throw new Error(`Drive върна HTTP ${res.status}. Провери дали Apps Script URL е правилният /exec адрес.`);
+  if (!res.ok) {
+    const e = new Error(`Drive върна HTTP ${res.status}. Превключвам към съвместим режим за Apps Script.`);
+    e.code = 'HTTP_FAILED';
+    e.status = res.status;
+    throw e;
+  }
   const text = await res.text();
   let data;
   try { data = JSON.parse(text); }
@@ -1094,7 +1099,7 @@ async function saveToDrive(manual=false){
     await driveRequest(payload);
     setSyncStatus(`Запазено в Google Drive: ${new Date().toLocaleTimeString('bg-BG', {hour:'2-digit', minute:'2-digit'})}`, 'ok');
   } catch(err) {
-    const canFallback = (err && err.code === 'FETCH_FAILED') && settings.driveCompatibilityMode !== false;
+    const canFallback = (err && (err.code === 'FETCH_FAILED' || err.code === 'HTTP_FAILED')) && settings.driveCompatibilityMode !== false;
     if (canFallback) {
       try {
         setSyncStatus('Нормалният запис беше блокиран. Опитвам съвместим режим...', 'warn');
@@ -1122,7 +1127,7 @@ async function loadFromDrive(manual=false){
     try {
       res = await driveRequest({ action:'load' });
     } catch(err) {
-      if (err && err.code === 'FETCH_FAILED') {
+      if (err && (err.code === 'FETCH_FAILED' || err.code === 'HTTP_FAILED')) {
         setSyncStatus('Нормалното зареждане беше блокирано. Опитвам резервно зареждане...', 'warn');
         res = await driveJsonpLoad();
       } else {
