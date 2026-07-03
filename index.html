@@ -133,6 +133,18 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .car-doc-day.muted{color:#b4bfcc;background:#fff}
 .car-doc-day.today{outline:2px solid rgba(31,111,235,.30)}
 .car-doc-day.selected{background:#1f6feb;color:#fff}
+.oil-change-tile{grid-column:2;background:#0f172a;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.42),0 0 36px rgba(245,158,11,.72),0 0 18px rgba(245,158,11,.36) inset}
+.oil-change-tile.active{border-color:#f59e0b;background:#111827;box-shadow:0 0 0 3px rgba(245,158,11,.55),0 0 46px rgba(245,158,11,.92),0 0 20px rgba(245,158,11,.42) inset}
+.oil-change-tile small{color:#ffb020}
+.car-doc-icon.oil{width:86px;height:58px}
+.car-doc-icon.oil img{max-width:86px!important;max-height:58px!important}
+.oil-change-panel{border-color:#fedf89;background:linear-gradient(180deg,#fff7ed,#fff)}
+.oil-change-editor{display:grid;grid-template-columns:1fr;gap:14px}
+.oil-change-fields{display:grid;gap:10px}
+.oil-change-fields label{display:grid;gap:6px}
+.oil-change-fields span{font-size:13px;font-weight:900;color:#344054}
+.oil-change-fields input,.oil-change-fields textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:800;color:#0f172a;outline:none;background:#fff;resize:vertical}
+.oil-change-fields input:focus,.oil-change-fields textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.16)}
 
 </style>
 </head>
@@ -378,6 +390,7 @@ const CAR_DOCUMENTS = [
   { key: 'inspection', label: 'ГТП', title: 'Годишен технически преглед', icon: 'assets/documents/gtp.png' },
   { key: 'vignette', label: 'Винетка', title: 'Винетка', icon: 'assets/documents/vignette.png' }
 ];
+const OIL_CHANGE = { key: 'oil', title: 'Смяна на масло', icon: 'assets/documents/oil.png' };
 
 let entries = [];
 let selectedMonth = monthKey(new Date());
@@ -457,11 +470,24 @@ function normalizeCarDocuments(documents){
     return acc;
   }, {});
 }
+function normalizeOilChange(value){
+  const source = value && typeof value === 'object' ? value : {};
+  const date = String(source.date || '').trim();
+  return {
+    date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '',
+    odometer: parseNumber(source.odometer),
+    note: String(source.note || '').trim()
+  };
+}
+function normalizeCarMaintenance(maintenance){
+  const source = maintenance && typeof maintenance === 'object' ? maintenance : {};
+  return { oil: normalizeOilChange(source.oil) };
+}
 function normalizeCarProfile(c){
   if (!c) return null;
   const name = String(c.name || '').trim();
   if (!name) return null;
-  return { id: String(c.id || slugCarName(name)), name, createdAt: c.createdAt || new Date().toISOString(), documents: normalizeCarDocuments(c.documents) };
+  return { id: String(c.id || slugCarName(name)), name, createdAt: c.createdAt || new Date().toISOString(), documents: normalizeCarDocuments(c.documents), maintenance: normalizeCarMaintenance(c.maintenance) };
 }
 function ensureDefaultCar(){
   carProfiles = (Array.isArray(carProfiles) ? carProfiles : []).map(normalizeCarProfile).filter(Boolean);
@@ -495,6 +521,11 @@ function carDocumentIcon(doc){
   if (doc.icon) return `<span class="car-doc-icon ${escapeHtml(doc.key)}"><img src="${escapeHtml(doc.icon)}" alt=""></span>`;
   return `<span class="car-doc-icon"><span class="car-doc-letter">${escapeHtml(doc.iconText || doc.label)}</span></span>`;
 }
+function oilChangeLabel(oil){
+  if (oil?.date) return fmtDate(oil.date);
+  if (oil?.odometer > 0) return `${fmtInt(oil.odometer)} км`;
+  return 'масло';
+}
 function renderCarDocumentCalendar(doc, selectedDate){
   const y = carDocumentPickerMonth.getFullYear();
   const m = carDocumentPickerMonth.getMonth();
@@ -515,6 +546,18 @@ function renderCarDocumentCalendar(doc, selectedDate){
       <button type="button" class="round-btn" data-car-doc-shift="1">›</button>
     </div>
     <div class="car-doc-calendar-grid">${grid}</div>
+  </div>`;
+}
+function renderOilChangeEditor(oil){
+  return `<div class="oil-change-editor">
+    <div class="oil-change-fields">
+      <label><span>Километраж при смяната</span><input id="oilOdometerInput" type="text" inputmode="decimal" placeholder="Напр. 245000" value="${oil.odometer > 0 ? escapeHtml(fmtInt(oil.odometer)) : ''}"></label>
+      <label><span>Какво е сменено</span><textarea id="oilNoteInput" rows="3" placeholder="Масло и филтър, въздушен филтър...">${escapeHtml(oil.note || '')}</textarea></label>
+      <button id="saveOilChangeBtn" class="primary small" type="button">Запази смяна</button>
+    </div>
+    <div class="oil-calendar-block">
+      ${renderCarDocumentCalendar(OIL_CHANGE, oil.date || '')}
+    </div>
   </div>`;
 }
 
@@ -1328,6 +1371,7 @@ function renderCarProfiles(){
   });
   if (!docGrid) return;
   const currentDoc = CAR_DOCUMENTS.find(doc => doc.key === activeCarDocumentKey);
+  const oil = normalizeOilChange(current.maintenance?.oil);
   docGrid.innerHTML = CAR_DOCUMENTS.map(doc => {
     const value = current.documents?.[doc.key] || '';
     const status = documentStatus(value);
@@ -1335,12 +1379,16 @@ function renderCarProfiles(){
       ${carDocumentIcon(doc)}
       <small>${value ? escapeHtml(fmtDate(value)) : escapeHtml(status.label)}</small>
     </button>`;
-  }).join('') + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '');
+  }).join('') + `<button type="button" class="car-doc-tile oil-change-tile ${activeCarDocumentKey===OIL_CHANGE.key?'active':''}" data-car-doc-open="${OIL_CHANGE.key}" aria-label="${escapeHtml(OIL_CHANGE.title)}">
+      ${carDocumentIcon(OIL_CHANGE)}
+      <small>${escapeHtml(oilChangeLabel(oil))}</small>
+    </button>` + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '') + (activeCarDocumentKey===OIL_CHANGE.key ? `<div class="car-doc-editor oil-change-panel" style="grid-column:1/-1">${renderOilChangeEditor(oil)}</div>` : '');
   docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
     btn.addEventListener('click', () => {
       const nextKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
       activeCarDocumentKey = nextKey;
-      if (nextKey) carDocumentPickerMonth = parseISO(activeCar().documents?.[nextKey] || todayISO());
+      if (nextKey === OIL_CHANGE.key) carDocumentPickerMonth = parseISO(activeCar().maintenance?.oil?.date || todayISO());
+      else if (nextKey) carDocumentPickerMonth = parseISO(activeCar().documents?.[nextKey] || todayISO());
       renderCarProfiles();
     });
   });
@@ -1350,7 +1398,14 @@ function renderCarProfiles(){
       renderCarProfiles();
     });
   });
-  docGrid.querySelectorAll('[data-car-doc-date]').forEach(btn => btn.addEventListener('click', () => saveCarDocument(activeCarDocumentKey, btn.dataset.carDocDate)));
+  docGrid.querySelectorAll('[data-car-doc-date]').forEach(btn => btn.addEventListener('click', () => {
+    if (activeCarDocumentKey === OIL_CHANGE.key) saveOilChange({ date: btn.dataset.carDocDate, odometer: $('oilOdometerInput')?.value, note: $('oilNoteInput')?.value }, true);
+    else saveCarDocument(activeCarDocumentKey, btn.dataset.carDocDate);
+  }));
+  $('saveOilChangeBtn')?.addEventListener('click', () => saveOilChange({
+    odometer: $('oilOdometerInput')?.value,
+    note: $('oilNoteInput')?.value
+  }, false));
 }
 function saveCarDocument(key, value){
   const car = activeCar();
@@ -1364,6 +1419,22 @@ function saveCarDocument(key, value){
   car.documents = normalizeCarDocuments({ ...car.documents, [key]: parsed });
   saveLocal();
   activeCarDocumentKey = null;
+  renderCarProfiles();
+  scheduleDriveSave();
+}
+function saveOilChange(patch, keepOpen=true){
+  const car = activeCar();
+  if (!car) return;
+  const currentOil = normalizeOilChange(car.maintenance?.oil);
+  const next = {
+    ...currentOil,
+    ...patch,
+    odometer: patch.odometer !== undefined ? parseNumber(patch.odometer) : currentOil.odometer,
+    note: patch.note !== undefined ? String(patch.note || '').trim() : currentOil.note
+  };
+  car.maintenance = normalizeCarMaintenance({ ...car.maintenance, oil: next });
+  saveLocal();
+  activeCarDocumentKey = keepOpen ? OIL_CHANGE.key : null;
   renderCarProfiles();
   scheduleDriveSave();
 }
