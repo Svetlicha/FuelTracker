@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fuel-tracker-v34';
+const CACHE_NAME = 'fuel-tracker-v35';
 const FILES = [
   './',
   './index.html',
