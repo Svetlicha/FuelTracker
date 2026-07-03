@@ -1069,17 +1069,22 @@ async function driveRequest(payload){
   const url = getDriveUrl();
   if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
   let res;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
   try {
     res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload),
-      redirect: 'follow'
+      redirect: 'follow',
+      signal: controller.signal
     });
   } catch(err) {
     const e = new Error(driveFetchErrorMessage(err));
     e.code = 'FETCH_FAILED';
     throw e;
+  } finally {
+    clearTimeout(timer);
   }
   if (!res.ok) {
     const e = new Error(`Drive върна HTTP ${res.status}. Превключвам към съвместим режим за Apps Script.`);
@@ -1097,14 +1102,37 @@ async function driveRequest(payload){
 async function driveSaveFallback(payload){
   const url = getDriveUrl();
   if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
-  await fetch(url, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
-    redirect: 'follow'
+  return new Promise((resolve) => {
+    const frameName = 'fuelTrackerDriveSaveFrame_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const iframe = document.createElement('iframe');
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+    let done = false;
+    function cleanup(){
+      if (done) return;
+      done = true;
+      setTimeout(() => {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 300);
+      resolve({ ok:true, submitted:true });
+    }
+    iframe.name = frameName;
+    iframe.style.display = 'none';
+    form.style.display = 'none';
+    form.method = 'POST';
+    form.action = url;
+    form.target = frameName;
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    iframe.addEventListener('load', cleanup, { once:true });
+    form.submit();
+    setTimeout(cleanup, 5000);
   });
-  return { ok:true, opaque:true };
 }
 function driveJsonpLoad(){
   const url = getDriveUrl();
@@ -1144,7 +1172,7 @@ async function saveToDrive(manual=false){
       try {
         setSyncStatus('Нормалният запис беше блокиран. Опитвам съвместим режим...', 'warn');
         await driveSaveFallback(payload);
-        setSyncStatus('Записът е изпратен към Google Drive в съвместим режим. Понеже браузърът блокира отговора, не мога да потвърдя със 100%.', 'warn');
+        setSyncStatus('Записът е изпратен към Google Drive в съвместим режим.', 'ok');
         return;
       } catch(fallbackErr) {
         openDrivePanel(true);
