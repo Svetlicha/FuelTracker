@@ -133,14 +133,17 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .car-doc-day.muted{color:#b4bfcc;background:#fff}
 .car-doc-day.today{outline:2px solid rgba(31,111,235,.30)}
 .car-doc-day.selected{background:#1f6feb;color:#fff}
-.oil-change-tile{grid-column:2;background:#0f172a;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.42),0 0 36px rgba(245,158,11,.72),0 0 18px rgba(245,158,11,.36) inset}
-.oil-change-tile.active{border-color:#f59e0b;background:#111827;box-shadow:0 0 0 3px rgba(245,158,11,.55),0 0 46px rgba(245,158,11,.92),0 0 20px rgba(245,158,11,.42) inset}
-.oil-change-tile small{color:#ffb020}
-.car-doc-icon.oil{width:86px;height:58px}
-.car-doc-icon.oil img{max-width:86px!important;max-height:58px!important}
+.oil-change-tile{grid-column:2;background:#fff;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.34),0 0 30px rgba(245,158,11,.62)}
+.oil-change-tile.active{border-color:#f59e0b;background:#fffaf0;box-shadow:0 0 0 3px rgba(245,158,11,.48),0 0 42px rgba(245,158,11,.78)}
+.oil-change-tile small{color:#92400e}
+.car-doc-icon.oil{width:76px;height:48px}
+.car-doc-icon.oil img{max-width:76px!important;max-height:48px!important}
 .oil-change-panel{border-color:#fedf89;background:linear-gradient(180deg,#fff7ed,#fff)}
 .oil-change-editor{display:grid;grid-template-columns:1fr;gap:14px}
 .oil-change-fields{display:grid;gap:10px}
+.oil-date-display{border:1px solid #fedf89;background:#fffbeb;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.oil-date-display span{font-size:13px;font-weight:900;color:#92400e}
+.oil-date-display strong{font-size:15px;color:#0f172a}
 .oil-change-fields label{display:grid;gap:6px}
 .oil-change-fields span{font-size:13px;font-weight:900;color:#344054}
 .oil-change-fields input,.oil-change-fields textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:800;color:#0f172a;outline:none;background:#fff;resize:vertical}
@@ -522,7 +525,6 @@ function carDocumentIcon(doc){
   return `<span class="car-doc-icon"><span class="car-doc-letter">${escapeHtml(doc.iconText || doc.label)}</span></span>`;
 }
 function oilChangeLabel(oil){
-  if (oil?.date) return fmtDate(oil.date);
   if (oil?.odometer > 0) return `${fmtInt(oil.odometer)} км`;
   return 'масло';
 }
@@ -551,6 +553,7 @@ function renderCarDocumentCalendar(doc, selectedDate){
 function renderOilChangeEditor(oil){
   return `<div class="oil-change-editor">
     <div class="oil-change-fields">
+      <div class="oil-date-display"><span>Дата на последна смяна</span><strong>${oil.date ? escapeHtml(fmtDate(oil.date)) : '—'}</strong></div>
       <label><span>Километраж при смяната</span><input id="oilOdometerInput" type="text" inputmode="decimal" placeholder="Напр. 245000" value="${oil.odometer > 0 ? escapeHtml(fmtInt(oil.odometer)) : ''}"></label>
       <label><span>Какво е сменено</span><textarea id="oilNoteInput" rows="3" placeholder="Масло и филтър, въздушен филтър...">${escapeHtml(oil.note || '')}</textarea></label>
       <button id="saveOilChangeBtn" class="primary small" type="button">Запази смяна</button>
