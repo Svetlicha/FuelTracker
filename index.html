@@ -138,28 +138,41 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .oil-change-tile small{color:#92400e;font-size:9px}
 .car-doc-icon.oil{width:38px;height:24px;border-radius:8px}
 .car-doc-icon.oil img{max-width:38px!important;max-height:24px!important}
+.repair-log-tile{grid-column:3;width:50%;justify-self:center;align-self:center;padding:5px;border-radius:12px;gap:3px;background:#f8fafc;border-color:#94a3b8;box-shadow:0 0 0 3px rgba(100,116,139,.18)}
+.repair-log-tile.active{background:#eef2ff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.28),0 0 28px rgba(99,102,241,.38)}
+.repair-log-tile small{font-size:9px;color:#334155}
+.repair-log-tile .car-doc-letter{font-size:18px;color:#334155}
 .oil-change-panel{border-color:#fedf89;background:linear-gradient(180deg,#fff7ed,#fff)}
 .oil-change-editor{display:grid;grid-template-columns:1fr;gap:14px}
 .oil-change-fields{display:grid;gap:10px}
 .oil-date-display{border:1px solid #fedf89;background:#fffbeb;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:center}
 .oil-date-display span{font-size:13px;font-weight:900;color:#92400e}
 .oil-date-display strong{font-size:15px;color:#0f172a}
-.oil-change-fields label{display:grid;gap:6px}
-.oil-change-fields span{font-size:13px;font-weight:900;color:#344054}
-.oil-change-fields input,.oil-change-fields textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:800;color:#0f172a;outline:none;background:#fff;resize:vertical}
-.oil-change-fields input:focus,.oil-change-fields textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.16)}
+.oil-change-fields label,.repair-fields label{display:grid;gap:6px}
+.oil-change-fields span,.repair-fields span{font-size:13px;font-weight:900;color:#344054}
+.oil-change-fields input,.oil-change-fields textarea,.repair-fields input,.repair-fields textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-weight:800;color:#0f172a;outline:none;background:#fff;resize:vertical}
+.oil-change-fields input:focus,.oil-change-fields textarea:focus,.repair-fields input:focus,.repair-fields textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.16)}
+.maintenance-history{display:grid;gap:8px;margin-top:10px}
+.maintenance-history-title{font-size:13px;font-weight:1000;color:#344054}
+.maintenance-history-item{display:grid;grid-template-columns:1fr auto;gap:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fff;color:#0f172a}
+.maintenance-history-item strong{font-size:13px}.maintenance-history-item small{color:#667085;font-weight:800}.maintenance-history-item em{font-style:normal;color:#92400e;font-weight:1000}
+.repair-panel{border-color:#c7d2fe;background:linear-gradient(180deg,#eef2ff,#fff)}
+.repair-editor{display:grid;grid-template-columns:1fr;gap:14px}.repair-fields{display:grid;gap:10px}
 .theme-toggle{position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:42px;border:1px solid rgba(255,255,255,.42);border-radius:14px;background:rgba(255,255,255,.16);color:#fff;font-size:20px;font-weight:1000;display:grid;place-items:center}
 .theme-toggle.active{background:#fff;color:#0f172a;border-color:#fff}
 body.dark-mode{--bg:#080d16;--card:#111827;--ink:#f8fafc;--muted:#9aa7bd;--line:#293548;--soft:#132036;background:radial-gradient(circle at top left,#10213a 0,#080d16 42%,#05070c 100%);color:var(--ink)}
 body.dark-mode .panel,body.dark-mode .auth-card,body.dark-mode .entry-card,body.dark-mode .day-detail-card,body.dark-mode .stat-card,body.dark-mode .fuel-price-cell,body.dark-mode .date-picker,body.dark-mode .car-doc-editor{background:#111827;border-color:#293548;color:#f8fafc}
 body.dark-mode .auth-screen{background:radial-gradient(circle at top left,#10213a 0,#080d16 42%,#05070c 100%)}
-body.dark-mode .field input,body.dark-mode .field select,body.dark-mode .car-add-row input,body.dark-mode .oil-change-fields input,body.dark-mode .oil-change-fields textarea,body.dark-mode .password-wrap input{background:#0b1220;border-color:#293548;color:#f8fafc}
+body.dark-mode .field input,body.dark-mode .field select,body.dark-mode .car-add-row input,body.dark-mode .oil-change-fields input,body.dark-mode .oil-change-fields textarea,body.dark-mode .repair-fields input,body.dark-mode .repair-fields textarea,body.dark-mode .password-wrap input{background:#0b1220;border-color:#293548;color:#f8fafc}
 body.dark-mode .car-chip,body.dark-mode .records-pill,body.dark-mode .current-pill,body.dark-mode .break-row,body.dark-mode .overall-grid div,body.dark-mode .drive-options,body.dark-mode .day-details,body.dark-mode .calendar-day,body.dark-mode .picker-day,body.dark-mode .car-doc-day,body.dark-mode .fuel-option{background:#0b1220;border-color:#293548;color:#f8fafc}
 body.dark-mode .car-doc-tile{background:#0b1220;border-color:#293548;color:#f8fafc}
 body.dark-mode .car-doc-section{border-top-color:#293548}
 body.dark-mode .oil-change-tile{background:#fff;color:#0f172a}
 body.dark-mode .oil-change-panel{background:linear-gradient(180deg,#1f2937,#111827);border-color:#f59e0b}
 body.dark-mode .oil-date-display{background:#2a1d06;border-color:#f59e0b}
+body.dark-mode .repair-panel{background:linear-gradient(180deg,#1f2937,#111827);border-color:#6366f1}
+body.dark-mode .maintenance-history-item{background:#0b1220;border-color:#293548;color:#f8fafc}
+body.dark-mode .maintenance-history-title{color:#f8fafc}
 body.dark-mode .oil-date-display strong,body.dark-mode .stat-card strong,body.dark-mode .entry-odo strong,body.dark-mode .section-head h2,body.dark-mode .auth-title{color:#f8fafc}
 body.dark-mode .eyebrow,body.dark-mode .hint,body.dark-mode .field span,body.dark-mode .stat-card span,body.dark-mode .stat-card small,body.dark-mode .entry-meta,body.dark-mode .entry-odo span,body.dark-mode .car-doc-calendar-top strong span,body.dark-mode .car-doc-weekday{color:#9aa7bd}
 body.dark-mode .month-chip.active{background:#f8fafc;color:#0f172a}
@@ -423,6 +436,7 @@ const CAR_DOCUMENTS = [
   { key: 'vignette', label: 'Винетка', title: 'Винетка', icon: 'assets/documents/vignette.png' }
 ];
 const OIL_CHANGE = { key: 'oil', title: 'Смяна на масло', icon: 'assets/documents/oil.png' };
+const REPAIR_LOG = { key: 'repair', label: 'Ремонт', title: 'Други ремонти', iconText: 'R' };
 
 let entries = [];
 let selectedMonth = monthKey(new Date());
@@ -436,6 +450,7 @@ let syncTimer = null;
 let appBooted = false;
 let activeCarDocumentKey = null;
 let carDocumentPickerMonth = new Date();
+let repairDraftDate = todayISO();
 
 const $ = (id) => document.getElementById(id);
 
@@ -511,9 +526,43 @@ function normalizeOilChange(value){
     note: String(source.note || '').trim()
   };
 }
+function oilHistoryId(item){
+  return String(item.id || `${item.date || 'no_date'}_${item.odometer || 0}_${String(item.note || '').slice(0,24)}`);
+}
+function normalizeOilHistory(history, currentOil){
+  const items = Array.isArray(history) ? history.map(normalizeOilChange) : [];
+  const current = normalizeOilChange(currentOil);
+  if ((current.date || current.odometer > 0 || current.note) && !items.some(item => item.date === current.date && item.odometer === current.odometer && item.note === current.note)) {
+    items.push(current);
+  }
+  const map = new Map();
+  items.filter(item => item.date || item.odometer > 0 || item.note).forEach(item => {
+    map.set(oilHistoryId(item), { ...item, id: oilHistoryId(item) });
+  });
+  return [...map.values()].sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || (b.odometer || 0) - (a.odometer || 0));
+}
+function latestOilChange(history, fallback){
+  const items = normalizeOilHistory(history, fallback);
+  return items[0] ? normalizeOilChange(items[0]) : normalizeOilChange(fallback);
+}
+function normalizeRepair(value){
+  const source = value && typeof value === 'object' ? value : {};
+  const date = String(source.date || '').trim();
+  return {
+    id: String(source.id || uid()),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '',
+    note: String(source.note || source.description || '').trim(),
+    amount: parseNumber(source.amount)
+  };
+}
+function normalizeRepairHistory(repairs){
+  const items = Array.isArray(repairs) ? repairs.map(normalizeRepair) : [];
+  return items.filter(item => item.date || item.note || item.amount > 0).sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+}
 function normalizeCarMaintenance(maintenance){
   const source = maintenance && typeof maintenance === 'object' ? maintenance : {};
-  return { oil: normalizeOilChange(source.oil) };
+  const oilHistory = normalizeOilHistory(source.oilHistory, source.oil);
+  return { oil: latestOilChange(oilHistory, source.oil), oilHistory, repairs: normalizeRepairHistory(source.repairs) };
 }
 function normalizeCarProfile(c){
   if (!c) return null;
@@ -563,6 +612,10 @@ function oilChangeLabel(oil){
   if (oil?.odometer > 0) return `${fmtInt(oil.odometer)} км`;
   return 'масло';
 }
+function repairLogLabel(repairs){
+  const latest = normalizeRepairHistory(repairs)[0];
+  return latest?.date ? fmtDate(latest.date) : 'ремонт';
+}
 function oilChangeStatus(oil){
   const base = parseNumber(oil?.odometer);
   const current = latestCarOdometer();
@@ -610,6 +663,13 @@ function renderCarDocumentCalendar(doc, selectedDate){
   </div>`;
 }
 function renderOilChangeEditor(oil){
+  const car = activeCar();
+  const history = normalizeOilHistory(car.maintenance?.oilHistory, oil);
+  const historyHtml = history.length ? history.map(item => `
+      <div class="maintenance-history-item">
+        <div><strong>${item.date ? escapeHtml(fmtDate(item.date)) : 'Без дата'}</strong><small>${item.note ? escapeHtml(item.note) : 'Смяна на масло'}</small></div>
+        <em>${item.odometer > 0 ? escapeHtml(fmtInt(item.odometer)) + ' км' : '—'}</em>
+      </div>`).join('') : `<div class="empty-inline">Няма записана история за масло.</div>`;
   return `<div class="oil-change-editor">
     <div class="oil-change-fields">
       <div class="oil-date-display"><span>Дата на последна смяна</span><strong>${oil.date ? escapeHtml(fmtDate(oil.date)) : '—'}</strong></div>
@@ -619,6 +679,33 @@ function renderOilChangeEditor(oil){
     </div>
     <div class="oil-calendar-block">
       ${renderCarDocumentCalendar(OIL_CHANGE, oil.date || '')}
+      <div class="maintenance-history">
+        <div class="maintenance-history-title">История масло</div>
+        ${historyHtml}
+      </div>
+    </div>
+  </div>`;
+}
+function renderRepairEditor(repairs){
+  const items = normalizeRepairHistory(repairs);
+  const historyHtml = items.length ? items.map(item => `
+      <div class="maintenance-history-item">
+        <div><strong>${item.date ? escapeHtml(fmtDate(item.date)) : 'Без дата'}</strong><small>${item.note ? escapeHtml(item.note) : 'Ремонт'}</small></div>
+        <em>${item.amount > 0 ? escapeHtml(fmtMoney(item.amount)) : '—'}</em>
+      </div>`).join('') : `<div class="empty-inline">Няма записани ремонти.</div>`;
+  return `<div class="repair-editor">
+    <div class="repair-fields">
+      <div class="oil-date-display"><span>Дата на ремонта</span><strong>${escapeHtml(fmtDate(repairDraftDate))}</strong></div>
+      <label><span>Описание на ремонта</span><textarea id="repairNoteInput" rows="3" placeholder="Напр. носачи, накладки, диагностика..."></textarea></label>
+      <label><span>Сума</span><input id="repairAmountInput" type="text" inputmode="decimal" placeholder="Напр. 250"></label>
+      <button id="saveRepairBtn" class="primary small" type="button">Запази ремонт</button>
+    </div>
+    <div class="oil-calendar-block">
+      ${renderCarDocumentCalendar(REPAIR_LOG, repairDraftDate)}
+      <div class="maintenance-history">
+        <div class="maintenance-history-title">История ремонти</div>
+        ${historyHtml}
+      </div>
     </div>
   </div>`;
 }
@@ -1478,12 +1565,19 @@ function renderCarProfiles(){
   }).join('') + `<button type="button" class="car-doc-tile oil-change-tile ${oilStatus.className} ${activeCarDocumentKey===OIL_CHANGE.key?'active':''}" data-car-doc-open="${OIL_CHANGE.key}" aria-label="${escapeHtml(OIL_CHANGE.title)}">
       ${carDocumentIcon(OIL_CHANGE)}
       <small>${escapeHtml(oilChangeLabel(oil))}</small>
-    </button>` + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '') + (activeCarDocumentKey===OIL_CHANGE.key ? `<div class="car-doc-editor oil-change-panel" style="grid-column:1/-1">${renderOilChangeEditor(oil)}</div>` : '');
+    </button><button type="button" class="car-doc-tile repair-log-tile ${activeCarDocumentKey===REPAIR_LOG.key?'active':''}" data-car-doc-open="${REPAIR_LOG.key}" aria-label="${escapeHtml(REPAIR_LOG.title)}">
+      ${carDocumentIcon(REPAIR_LOG)}
+      <small>${escapeHtml(repairLogLabel(current.maintenance?.repairs))}</small>
+    </button>` + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '') + (activeCarDocumentKey===OIL_CHANGE.key ? `<div class="car-doc-editor oil-change-panel" style="grid-column:1/-1">${renderOilChangeEditor(oil)}</div>` : '') + (activeCarDocumentKey===REPAIR_LOG.key ? `<div class="car-doc-editor repair-panel" style="grid-column:1/-1">${renderRepairEditor(current.maintenance?.repairs)}</div>` : '');
   docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
     btn.addEventListener('click', () => {
       const nextKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
       activeCarDocumentKey = nextKey;
       if (nextKey === OIL_CHANGE.key) carDocumentPickerMonth = parseISO(activeCar().maintenance?.oil?.date || todayISO());
+      else if (nextKey === REPAIR_LOG.key) {
+        repairDraftDate = normalizeRepairHistory(activeCar().maintenance?.repairs)[0]?.date || todayISO();
+        carDocumentPickerMonth = parseISO(repairDraftDate);
+      }
       else if (nextKey) carDocumentPickerMonth = parseISO(activeCar().documents?.[nextKey] || todayISO());
       renderCarProfiles();
     });
@@ -1496,12 +1590,21 @@ function renderCarProfiles(){
   });
   docGrid.querySelectorAll('[data-car-doc-date]').forEach(btn => btn.addEventListener('click', () => {
     if (activeCarDocumentKey === OIL_CHANGE.key) saveOilChange({ date: btn.dataset.carDocDate, odometer: $('oilOdometerInput')?.value, note: $('oilNoteInput')?.value }, true);
+    else if (activeCarDocumentKey === REPAIR_LOG.key) {
+      repairDraftDate = btn.dataset.carDocDate;
+      renderCarProfiles();
+    }
     else saveCarDocument(activeCarDocumentKey, btn.dataset.carDocDate);
   }));
   $('saveOilChangeBtn')?.addEventListener('click', () => saveOilChange({
     odometer: $('oilOdometerInput')?.value,
     note: $('oilNoteInput')?.value
   }, false));
+  $('saveRepairBtn')?.addEventListener('click', () => saveRepair({
+    date: repairDraftDate,
+    note: $('repairNoteInput')?.value,
+    amount: $('repairAmountInput')?.value
+  }));
 }
 function saveCarDocument(key, value){
   const car = activeCar();
@@ -1529,11 +1632,28 @@ function saveOilChange(patch, keepOpen=true){
     odometer: patch.odometer !== undefined ? parseNumber(patch.odometer) : currentOil.odometer,
     note: patch.note !== undefined ? String(patch.note || '').trim() : currentOil.note
   };
-  car.maintenance = normalizeCarMaintenance({ ...car.maintenance, oil: next });
+  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
+  const nextHistory = normalizeOilHistory([...(currentMaintenance.oilHistory || []), next], next);
+  car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, oil: latestOilChange(nextHistory, next), oilHistory: nextHistory });
   saveLocal();
   activeCarDocumentKey = keepOpen ? OIL_CHANGE.key : null;
   renderCarProfiles();
   renderCarAlerts();
+  scheduleDriveSave();
+}
+function saveRepair(patch){
+  const car = activeCar();
+  if (!car) return;
+  const date = String(patch.date || repairDraftDate || todayISO());
+  const note = String(patch.note || '').trim();
+  const amount = parseNumber(patch.amount);
+  if (!date && !note && amount <= 0) return;
+  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
+  const repairs = normalizeRepairHistory([...(currentMaintenance.repairs || []), { id: uid(), date, note, amount }]);
+  car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, repairs });
+  saveLocal();
+  activeCarDocumentKey = REPAIR_LOG.key;
+  renderCarProfiles();
   scheduleDriveSave();
 }
 function addCarProfile(){
