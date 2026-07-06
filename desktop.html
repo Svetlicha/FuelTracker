@@ -138,10 +138,11 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .oil-change-tile small{color:#92400e;font-size:9px}
 .car-doc-icon.oil{width:38px;height:24px;border-radius:8px}
 .car-doc-icon.oil img{max-width:38px!important;max-height:24px!important}
-.repair-log-tile{grid-column:3;width:50%;justify-self:center;align-self:center;padding:5px;border-radius:12px;gap:3px;background:#f8fafc;border-color:#94a3b8;box-shadow:0 0 0 3px rgba(100,116,139,.18)}
-.repair-log-tile.active{background:#eef2ff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.28),0 0 28px rgba(99,102,241,.38)}
+.repair-log-tile{grid-column:3;width:50%;justify-self:center;align-self:center;padding:5px;border-radius:12px;gap:3px;background:#fff;border-color:#64748b;box-shadow:0 0 0 3px rgba(100,116,139,.22),0 0 30px rgba(100,116,139,.32)}
+.repair-log-tile.active{background:#eef2ff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.34),0 0 42px rgba(99,102,241,.52)}
 .repair-log-tile small{font-size:9px;color:#334155}
-.repair-log-tile .car-doc-letter{font-size:18px;color:#334155}
+.repair-log-tile .car-doc-icon{width:38px;height:24px;border-radius:8px}
+.repair-log-tile .car-doc-letter{font-size:19px;color:#334155;line-height:1}
 .oil-change-panel{border-color:#fedf89;background:linear-gradient(180deg,#fff7ed,#fff)}
 .oil-change-editor{display:grid;grid-template-columns:1fr;gap:14px}
 .oil-change-fields{display:grid;gap:10px}
@@ -155,7 +156,10 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .maintenance-history{display:grid;gap:8px;margin-top:10px}
 .maintenance-history-title{font-size:13px;font-weight:1000;color:#344054}
 .maintenance-history-item{display:grid;grid-template-columns:1fr auto;gap:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fff;color:#0f172a}
-.maintenance-history-item strong{font-size:13px}.maintenance-history-item small{color:#667085;font-weight:800}.maintenance-history-item em{font-style:normal;color:#92400e;font-weight:1000}
+.maintenance-history-item strong{font-size:13px}.maintenance-history-item small{display:block;color:#667085;font-weight:800}.maintenance-history-item em{font-style:normal;color:#92400e;font-weight:1000;text-align:right;white-space:nowrap}
+.history-actions{display:flex;gap:6px;justify-content:flex-end;grid-column:1/-1}
+.history-actions button{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:6px 9px;font-size:12px;font-weight:1000;color:#344054}
+.history-actions button.danger-mini{border-color:#fecdd3;background:#fff1f2;color:#b42318}
 .repair-panel{border-color:#c7d2fe;background:linear-gradient(180deg,#eef2ff,#fff)}
 .repair-editor{display:grid;grid-template-columns:1fr;gap:14px}.repair-fields{display:grid;gap:10px}
 .theme-toggle{position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:42px;border:1px solid rgba(255,255,255,.42);border-radius:14px;background:rgba(255,255,255,.16);color:#fff;font-size:20px;font-weight:1000;display:grid;place-items:center}
@@ -436,7 +440,7 @@ const CAR_DOCUMENTS = [
   { key: 'vignette', label: 'Винетка', title: 'Винетка', icon: 'assets/documents/vignette.png' }
 ];
 const OIL_CHANGE = { key: 'oil', title: 'Смяна на масло', icon: 'assets/documents/oil.png' };
-const REPAIR_LOG = { key: 'repair', label: 'Ремонт', title: 'Други ремонти', iconText: 'R' };
+const REPAIR_LOG = { key: 'repair', label: 'Ремонт', title: 'Други ремонти', iconText: '⚙' };
 
 let entries = [];
 let selectedMonth = monthKey(new Date());
@@ -451,6 +455,8 @@ let appBooted = false;
 let activeCarDocumentKey = null;
 let carDocumentPickerMonth = new Date();
 let repairDraftDate = todayISO();
+let oilEditId = null;
+let repairEditId = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -521,13 +527,15 @@ function normalizeOilChange(value){
   const source = value && typeof value === 'object' ? value : {};
   const date = String(source.date || '').trim();
   return {
+    id: String(source.id || ''),
     date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '',
     odometer: parseNumber(source.odometer),
+    amount: parseNumber(source.amount),
     note: String(source.note || '').trim()
   };
 }
 function oilHistoryId(item){
-  return String(item.id || `${item.date || 'no_date'}_${item.odometer || 0}_${String(item.note || '').slice(0,24)}`);
+  return String(item.id || `${item.date || 'no_date'}_${item.odometer || 0}_${item.amount || 0}_${String(item.note || '').slice(0,24)}`);
 }
 function normalizeOilHistory(history, currentOil){
   const items = Array.isArray(history) ? history.map(normalizeOilChange) : [];
@@ -665,20 +673,27 @@ function renderCarDocumentCalendar(doc, selectedDate){
 function renderOilChangeEditor(oil){
   const car = activeCar();
   const history = normalizeOilHistory(car.maintenance?.oilHistory, oil);
+  const editingOil = oilEditId ? history.find(item => item.id === oilEditId) : null;
+  const formOil = editingOil || oil;
   const historyHtml = history.length ? history.map(item => `
       <div class="maintenance-history-item">
         <div><strong>${item.date ? escapeHtml(fmtDate(item.date)) : 'Без дата'}</strong><small>${item.note ? escapeHtml(item.note) : 'Смяна на масло'}</small></div>
-        <em>${item.odometer > 0 ? escapeHtml(fmtInt(item.odometer)) + ' км' : '—'}</em>
+        <em>${item.odometer > 0 ? escapeHtml(fmtInt(item.odometer)) + ' км' : '—'}${item.amount > 0 ? '<br>' + escapeHtml(fmtMoney(item.amount)) : ''}</em>
+        <div class="history-actions">
+          <button type="button" data-oil-edit="${escapeHtml(item.id)}">Промени</button>
+          <button type="button" class="danger-mini" data-oil-delete="${escapeHtml(item.id)}">Изтрий</button>
+        </div>
       </div>`).join('') : `<div class="empty-inline">Няма записана история за масло.</div>`;
   return `<div class="oil-change-editor">
     <div class="oil-change-fields">
-      <div class="oil-date-display"><span>Дата на последна смяна</span><strong>${oil.date ? escapeHtml(fmtDate(oil.date)) : '—'}</strong></div>
-      <label><span>Километраж при смяната</span><input id="oilOdometerInput" type="text" inputmode="decimal" placeholder="Напр. 245000" value="${oil.odometer > 0 ? escapeHtml(fmtInt(oil.odometer)) : ''}"></label>
-      <label><span>Какво е сменено</span><textarea id="oilNoteInput" rows="3" placeholder="Масло и филтър, въздушен филтър...">${escapeHtml(oil.note || '')}</textarea></label>
-      <button id="saveOilChangeBtn" class="primary small" type="button">Запази смяна</button>
+      <div class="oil-date-display"><span>${editingOil ? 'Промяна на запис' : 'Дата на последна смяна'}</span><strong>${formOil.date ? escapeHtml(fmtDate(formOil.date)) : '—'}</strong></div>
+      <label><span>Километраж при смяната</span><input id="oilOdometerInput" type="text" inputmode="decimal" placeholder="Напр. 245000" value="${formOil.odometer > 0 ? escapeHtml(fmtInt(formOil.odometer)) : ''}"></label>
+      <label><span>Сума</span><input id="oilAmountInput" type="text" inputmode="decimal" placeholder="Напр. 120" value="${formOil.amount > 0 ? escapeHtml(fmtNum(formOil.amount,2)) : ''}"></label>
+      <label><span>Какво е сменено</span><textarea id="oilNoteInput" rows="3" placeholder="Масло и филтър, въздушен филтър...">${escapeHtml(formOil.note || '')}</textarea></label>
+      <button id="saveOilChangeBtn" class="primary small" type="button">${editingOil ? 'Запази промяната' : 'Запази смяна'}</button>
     </div>
     <div class="oil-calendar-block">
-      ${renderCarDocumentCalendar(OIL_CHANGE, oil.date || '')}
+      ${renderCarDocumentCalendar(OIL_CHANGE, formOil.date || '')}
       <div class="maintenance-history">
         <div class="maintenance-history-title">История масло</div>
         ${historyHtml}
@@ -688,17 +703,24 @@ function renderOilChangeEditor(oil){
 }
 function renderRepairEditor(repairs){
   const items = normalizeRepairHistory(repairs);
+  const editingRepair = repairEditId ? items.find(item => item.id === repairEditId) : null;
+  const formRepair = editingRepair || { date: repairDraftDate, note: '', amount: 0 };
+  repairDraftDate = formRepair.date || repairDraftDate || todayISO();
   const historyHtml = items.length ? items.map(item => `
       <div class="maintenance-history-item">
         <div><strong>${item.date ? escapeHtml(fmtDate(item.date)) : 'Без дата'}</strong><small>${item.note ? escapeHtml(item.note) : 'Ремонт'}</small></div>
         <em>${item.amount > 0 ? escapeHtml(fmtMoney(item.amount)) : '—'}</em>
+        <div class="history-actions">
+          <button type="button" data-repair-edit="${escapeHtml(item.id)}">Промени</button>
+          <button type="button" class="danger-mini" data-repair-delete="${escapeHtml(item.id)}">Изтрий</button>
+        </div>
       </div>`).join('') : `<div class="empty-inline">Няма записани ремонти.</div>`;
   return `<div class="repair-editor">
     <div class="repair-fields">
-      <div class="oil-date-display"><span>Дата на ремонта</span><strong>${escapeHtml(fmtDate(repairDraftDate))}</strong></div>
-      <label><span>Описание на ремонта</span><textarea id="repairNoteInput" rows="3" placeholder="Напр. носачи, накладки, диагностика..."></textarea></label>
-      <label><span>Сума</span><input id="repairAmountInput" type="text" inputmode="decimal" placeholder="Напр. 250"></label>
-      <button id="saveRepairBtn" class="primary small" type="button">Запази ремонт</button>
+      <div class="oil-date-display"><span>${editingRepair ? 'Промяна на ремонт' : 'Дата на ремонта'}</span><strong>${escapeHtml(fmtDate(repairDraftDate))}</strong></div>
+      <label><span>Описание на ремонта</span><textarea id="repairNoteInput" rows="3" placeholder="Напр. носачи, накладки, диагностика...">${escapeHtml(formRepair.note || '')}</textarea></label>
+      <label><span>Сума</span><input id="repairAmountInput" type="text" inputmode="decimal" placeholder="Напр. 250" value="${formRepair.amount > 0 ? escapeHtml(fmtNum(formRepair.amount,2)) : ''}"></label>
+      <button id="saveRepairBtn" class="primary small" type="button">${editingRepair ? 'Запази промяната' : 'Запази ремонт'}</button>
     </div>
     <div class="oil-calendar-block">
       ${renderCarDocumentCalendar(REPAIR_LOG, repairDraftDate)}
@@ -1573,6 +1595,8 @@ function renderCarProfiles(){
     btn.addEventListener('click', () => {
       const nextKey = btn.dataset.carDocOpen === activeCarDocumentKey ? null : btn.dataset.carDocOpen;
       activeCarDocumentKey = nextKey;
+      oilEditId = null;
+      repairEditId = null;
       if (nextKey === OIL_CHANGE.key) carDocumentPickerMonth = parseISO(activeCar().maintenance?.oil?.date || todayISO());
       else if (nextKey === REPAIR_LOG.key) {
         repairDraftDate = normalizeRepairHistory(activeCar().maintenance?.repairs)[0]?.date || todayISO();
@@ -1589,7 +1613,7 @@ function renderCarProfiles(){
     });
   });
   docGrid.querySelectorAll('[data-car-doc-date]').forEach(btn => btn.addEventListener('click', () => {
-    if (activeCarDocumentKey === OIL_CHANGE.key) saveOilChange({ date: btn.dataset.carDocDate, odometer: $('oilOdometerInput')?.value, note: $('oilNoteInput')?.value }, true);
+    if (activeCarDocumentKey === OIL_CHANGE.key) saveOilChange({ date: btn.dataset.carDocDate, odometer: $('oilOdometerInput')?.value, amount: $('oilAmountInput')?.value, note: $('oilNoteInput')?.value }, true);
     else if (activeCarDocumentKey === REPAIR_LOG.key) {
       repairDraftDate = btn.dataset.carDocDate;
       renderCarProfiles();
@@ -1598,13 +1622,31 @@ function renderCarProfiles(){
   }));
   $('saveOilChangeBtn')?.addEventListener('click', () => saveOilChange({
     odometer: $('oilOdometerInput')?.value,
+    amount: $('oilAmountInput')?.value,
     note: $('oilNoteInput')?.value
-  }, false));
+  }, true));
   $('saveRepairBtn')?.addEventListener('click', () => saveRepair({
     date: repairDraftDate,
     note: $('repairNoteInput')?.value,
     amount: $('repairAmountInput')?.value
   }));
+  docGrid.querySelectorAll('[data-oil-edit]').forEach(btn => btn.addEventListener('click', () => {
+    oilEditId = btn.dataset.oilEdit;
+    const item = normalizeOilHistory(activeCar().maintenance?.oilHistory, activeCar().maintenance?.oil).find(x => x.id === oilEditId);
+    if (item?.date) carDocumentPickerMonth = parseISO(item.date);
+    activeCarDocumentKey = OIL_CHANGE.key;
+    renderCarProfiles();
+  }));
+  docGrid.querySelectorAll('[data-oil-delete]').forEach(btn => btn.addEventListener('click', () => deleteOilChange(btn.dataset.oilDelete)));
+  docGrid.querySelectorAll('[data-repair-edit]').forEach(btn => btn.addEventListener('click', () => {
+    repairEditId = btn.dataset.repairEdit;
+    const item = normalizeRepairHistory(activeCar().maintenance?.repairs).find(x => x.id === repairEditId);
+    repairDraftDate = item?.date || todayISO();
+    carDocumentPickerMonth = parseISO(repairDraftDate);
+    activeCarDocumentKey = REPAIR_LOG.key;
+    renderCarProfiles();
+  }));
+  docGrid.querySelectorAll('[data-repair-delete]').forEach(btn => btn.addEventListener('click', () => deleteRepair(btn.dataset.repairDelete)));
 }
 function saveCarDocument(key, value){
   const car = activeCar();
@@ -1625,18 +1667,36 @@ function saveCarDocument(key, value){
 function saveOilChange(patch, keepOpen=true){
   const car = activeCar();
   if (!car) return;
-  const currentOil = normalizeOilChange(car.maintenance?.oil);
+  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
+  const editingOil = oilEditId ? (currentMaintenance.oilHistory || []).find(item => item.id === oilEditId) : null;
+  const currentOil = normalizeOilChange(editingOil || currentMaintenance.oil);
   const next = {
     ...currentOil,
     ...patch,
+    id: oilEditId || currentOil.id || uid(),
     odometer: patch.odometer !== undefined ? parseNumber(patch.odometer) : currentOil.odometer,
+    amount: patch.amount !== undefined ? parseNumber(patch.amount) : currentOil.amount,
     note: patch.note !== undefined ? String(patch.note || '').trim() : currentOil.note
   };
-  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
-  const nextHistory = normalizeOilHistory([...(currentMaintenance.oilHistory || []), next], next);
+  const baseHistory = oilEditId ? (currentMaintenance.oilHistory || []).filter(item => item.id !== oilEditId) : (currentMaintenance.oilHistory || []);
+  const nextHistory = normalizeOilHistory([...baseHistory, next], next);
   car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, oil: latestOilChange(nextHistory, next), oilHistory: nextHistory });
   saveLocal();
+  oilEditId = null;
   activeCarDocumentKey = keepOpen ? OIL_CHANGE.key : null;
+  renderCarProfiles();
+  renderCarAlerts();
+  scheduleDriveSave();
+}
+function deleteOilChange(id){
+  const car = activeCar();
+  if (!car || !id) return;
+  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
+  const nextHistory = normalizeOilHistory((currentMaintenance.oilHistory || []).filter(item => item.id !== id), null);
+  car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, oil: latestOilChange(nextHistory, null), oilHistory: nextHistory });
+  oilEditId = null;
+  activeCarDocumentKey = OIL_CHANGE.key;
+  saveLocal();
   renderCarProfiles();
   renderCarAlerts();
   scheduleDriveSave();
@@ -1649,10 +1709,24 @@ function saveRepair(patch){
   const amount = parseNumber(patch.amount);
   if (!date && !note && amount <= 0) return;
   const currentMaintenance = normalizeCarMaintenance(car.maintenance);
-  const repairs = normalizeRepairHistory([...(currentMaintenance.repairs || []), { id: uid(), date, note, amount }]);
+  const baseRepairs = repairEditId ? (currentMaintenance.repairs || []).filter(item => item.id !== repairEditId) : (currentMaintenance.repairs || []);
+  const repairs = normalizeRepairHistory([...baseRepairs, { id: repairEditId || uid(), date, note, amount }]);
   car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, repairs });
   saveLocal();
+  repairEditId = null;
   activeCarDocumentKey = REPAIR_LOG.key;
+  renderCarProfiles();
+  scheduleDriveSave();
+}
+function deleteRepair(id){
+  const car = activeCar();
+  if (!car || !id) return;
+  const currentMaintenance = normalizeCarMaintenance(car.maintenance);
+  const repairs = normalizeRepairHistory((currentMaintenance.repairs || []).filter(item => item.id !== id));
+  car.maintenance = normalizeCarMaintenance({ ...currentMaintenance, repairs });
+  repairEditId = null;
+  activeCarDocumentKey = REPAIR_LOG.key;
+  saveLocal();
   renderCarProfiles();
   scheduleDriveSave();
 }
