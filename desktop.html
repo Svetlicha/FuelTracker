@@ -171,7 +171,12 @@ body.dark-mode .field input,body.dark-mode .field select,body.dark-mode .car-add
 body.dark-mode .car-chip,body.dark-mode .records-pill,body.dark-mode .current-pill,body.dark-mode .break-row,body.dark-mode .overall-grid div,body.dark-mode .drive-options,body.dark-mode .day-details,body.dark-mode .calendar-day,body.dark-mode .picker-day,body.dark-mode .car-doc-day,body.dark-mode .fuel-option{background:#0b1220;border-color:#293548;color:#f8fafc}
 body.dark-mode .car-doc-tile{background:#0b1220;border-color:#293548;color:#f8fafc}
 body.dark-mode .car-doc-section{border-top-color:#293548}
-body.dark-mode .oil-change-tile{background:#fff;color:#0f172a}
+body.dark-mode .oil-change-tile{background:linear-gradient(180deg,#0f172a,#070b12);color:#f8fafc;border-color:#334155;box-shadow:0 0 0 2px rgba(148,163,184,.30),0 0 20px rgba(15,23,42,.64)}
+body.dark-mode .oil-change-tile small{color:#fbbf24}
+body.dark-mode .oil-change-tile.active{background:linear-gradient(180deg,#111827,#05070c);border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.86),0 0 34px rgba(255,255,255,.52),0 0 12px rgba(255,255,255,.22) inset;color:#fff}
+body.dark-mode .repair-log-tile{grid-template-rows:1fr;background:linear-gradient(180deg,#160b0b,#070b12);border-color:#ef4444;box-shadow:0 0 0 2px rgba(239,68,68,.48),0 0 32px rgba(239,68,68,.58)}
+body.dark-mode .repair-log-tile .car-doc-letter{color:#fecaca;text-shadow:0 0 18px rgba(248,113,113,.78)}
+body.dark-mode .repair-log-tile.active{background:linear-gradient(180deg,#220c0c,#070b12);border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.82),0 0 22px rgba(255,255,255,.36),0 0 38px rgba(239,68,68,.72)}
 body.dark-mode .oil-change-panel{background:linear-gradient(180deg,#1f2937,#111827);border-color:#f59e0b}
 body.dark-mode .oil-date-display{background:#2a1d06;border-color:#f59e0b}
 body.dark-mode .repair-panel{background:linear-gradient(180deg,#1f2937,#111827);border-color:#6366f1}
@@ -1596,7 +1601,6 @@ function renderCarProfiles(){
       <small>${escapeHtml(oilChangeLabel(oil))}</small>
     </button><button type="button" class="car-doc-tile repair-log-tile ${activeCarDocumentKey===REPAIR_LOG.key?'active':''}" data-car-doc-open="${REPAIR_LOG.key}" aria-label="${escapeHtml(REPAIR_LOG.title)}">
       ${carDocumentIcon(REPAIR_LOG)}
-      <small>${escapeHtml(repairLogLabel(current.maintenance?.repairs))}</small>
     </button>` + (currentDoc ? `<div class="car-doc-editor" style="grid-column:1/-1">${renderCarDocumentCalendar(currentDoc, current.documents?.[currentDoc.key] || '')}</div>` : '') + (activeCarDocumentKey===OIL_CHANGE.key ? `<div class="car-doc-editor oil-change-panel" style="grid-column:1/-1">${renderOilChangeEditor(oil)}</div>` : '') + (activeCarDocumentKey===REPAIR_LOG.key ? `<div class="car-doc-editor repair-panel" style="grid-column:1/-1">${renderRepairEditor(current.maintenance?.repairs)}</div>` : '');
   docGrid.querySelectorAll('[data-car-doc-open]').forEach(btn => {
     btn.addEventListener('click', () => {
