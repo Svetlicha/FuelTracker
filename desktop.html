@@ -163,6 +163,7 @@ body.mobile .hero.compact-hero .drive-toggle{width:auto;justify-content:center}
 .history-actions button.danger-mini{border-color:#fecdd3;background:#fff1f2;color:#b42318}
 .repair-panel{border-color:#c7d2fe;background:linear-gradient(180deg,#eef2ff,#fff)}
 .repair-editor{display:grid;grid-template-columns:1fr;gap:14px}.repair-fields{display:grid;gap:10px}
+.compact-car-panel{padding:12px 14px}.car-profile-bar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.car-title-button{border:1px solid var(--line);background:#fff;color:#0f172a;border-radius:16px;padding:11px 13px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:1000;min-width:0}.car-title-button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.car-title-button small{color:#667085;font-size:12px;font-weight:900;white-space:nowrap}.car-add-toggle{width:44px;height:44px;border:0;border-radius:15px;background:var(--primary);color:#fff;font-size:28px;line-height:1;font-weight:900}.car-profile-details{margin-top:10px}.car-profile-details[hidden],.car-add-row[hidden]{display:none}.compact-form-head{margin-bottom:10px}.compact-form-head .eyebrow{margin-bottom:0}.field-grid.fuel-top-grid{grid-template-columns:minmax(136px,.72fr) minmax(150px,1.28fr);gap:10px}.field-grid.amount-grid{grid-template-columns:minmax(126px,.82fr) minmax(154px,1.18fr);gap:10px}.amount-grid .price-field{grid-column:1/-1}.form-panel .field input,.form-panel .field select{padding:11px 12px;border-radius:14px}.form-panel .field span{font-size:12px}.form-panel .field em{font-size:11px}.form-panel .date-input-row{gap:6px}.form-panel .today-mini{padding:0 10px;border-radius:12px;font-size:12px}.fuel-price-dropdown summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-2px 0 12px}.fuel-price-dropdown summary::-webkit-details-marker{display:none}.fuel-price-dropdown summary .eyebrow{margin:0}.fuel-price-dropdown summary strong{font-size:20px}.fuel-price-dropdown summary:after{content:"⌄";width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#f2f6fb;color:#344054;font-weight:1000}.fuel-price-dropdown[open] summary:after{content:"⌃"}.fuel-price-table{gap:8px}.fuel-price-head{display:none}.fuel-price-row{display:grid;grid-template-columns:.68fr 1.32fr;gap:8px;align-items:stretch;border:1px solid var(--line);background:#fff;border-radius:16px;padding:8px}.fuel-price-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fuel-price-cell{border-radius:12px;padding:9px;box-shadow:none}.fuel-price-cell.month{display:flex;flex-direction:column;justify-content:center}.fuel-price-cell strong{font-size:16px;letter-spacing:0}.fuel-price-cell small{font-size:11px;line-height:1.2}
 .theme-toggle{position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:42px;border:1px solid rgba(255,255,255,.42);border-radius:14px;background:rgba(255,255,255,.16);color:#fff;font-size:20px;font-weight:1000;display:grid;place-items:center}
 .theme-toggle.active{background:#fff;color:#0f172a;border-color:#fff}
 body.dark-mode{--bg:#080d16;--card:#111827;--ink:#f8fafc;--muted:#9aa7bd;--line:#293548;--soft:#132036;--focus:#38bdf8;--focus-soft:rgba(56,189,248,.28);background:radial-gradient(circle at top left,#10213a 0,#080d16 42%,#05070c 100%);color:var(--ink)}
@@ -195,7 +196,9 @@ body.dark-mode .fuel-option.lpg.active{border-color:#34d399;box-shadow:0 0 0 2px
 body.dark-mode .fuel-option.a95.active{border-color:#fbbf24;box-shadow:0 0 0 2px rgba(251,191,36,.50),0 0 24px rgba(251,191,36,.24)}
 body.dark-mode .calendar-day.today,body.dark-mode .picker-day.today,body.dark-mode .car-doc-day.today{outline:2px solid rgba(56,189,248,.42)}
 body.dark-mode .primary:focus-visible,body.dark-mode .ghost:focus-visible,body.dark-mode .danger:focus-visible,body.dark-mode .drive-toggle:focus-visible,body.dark-mode .theme-toggle:focus-visible{outline:2px solid var(--focus);outline-offset:3px;box-shadow:0 0 22px rgba(56,189,248,.24)}
+body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b1220;border-color:#293548;color:#f8fafc}body.dark-mode .car-title-button small{color:#9aa7bd}body.dark-mode .fuel-price-dropdown summary:after{background:#0b1220;border:1px solid #293548;color:#f8fafc}
 @media (max-width:520px){.theme-toggle{left:10px;width:36px;height:36px;border-radius:12px;font-size:18px}}
+@media (max-width:640px){.compact-car-panel{padding:10px}.field-grid.fuel-top-grid{grid-template-columns:minmax(118px,.75fr) minmax(138px,1.25fr)}.field-grid.amount-grid{grid-template-columns:minmax(118px,.85fr) minmax(138px,1.15fr)}.form-panel .field input,.form-panel .field select{padding:10px 9px}.fuel-picker{margin-bottom:10px}.fuel-price-row{grid-template-columns:1fr;padding:8px}.fuel-price-values{grid-template-columns:1fr 1fr}.fuel-price-cell strong{font-size:15px}.fuel-price-cell small{font-size:10.5px}}
 
 </style>
 </head>
@@ -227,34 +230,32 @@ body.dark-mode .primary:focus-visible,body.dark-mode .ghost:focus-visible,body.d
   </header>
   <div id="carAlertBar" class="car-alert-bar"></div>
 
-  <section class="panel car-panel">
-    <div class="section-head compact">
-      <div>
-        <p class="eyebrow">Профил на автомобил</p>
-        <h2 id="activeCarTitle">BMW 528i</h2>
+  <section class="panel car-panel compact-car-panel">
+    <div class="car-profile-bar">
+      <button id="carProfileToggle" class="car-title-button" type="button" aria-expanded="false"><span id="activeCarTitle">BMW 528i</span><small><span id="activeCarRecords">0</span> записа</small></button>
+      <button id="carAddToggleBtn" class="car-add-toggle" type="button" aria-label="Добави автомобил" title="Добави автомобил">+</button>
+    </div>
+    <div id="carProfileDetails" class="car-profile-details" hidden>
+      <div id="carProfileRail" class="car-profile-rail"></div>
+      <div id="carAddRow" class="car-add-row" hidden>
+        <input id="newCarName" type="text" placeholder="Напиши автомобил, напр. VW Golf">
+        <button id="addCarBtn" class="ghost small" type="button">Добави кола</button>
       </div>
-      <span class="records-pill"><span id="activeCarRecords">0</span> записа</span>
+      <p class="hint">Всички зареждания, статистики, календар и срокове се показват само за избрания автомобил.</p>
     </div>
-    <div id="carProfileRail" class="car-profile-rail"></div>
-    <div class="car-add-row">
-      <input id="newCarName" type="text" placeholder="Напиши автомобил, напр. VW Golf">
-      <button id="addCarBtn" class="ghost small" type="button">Добави кола</button>
-    </div>
-    <p class="hint">Всички зареждания, статистики, календар и срокове се показват само за избрания автомобил.</p>
   </section>
 
   <main class="layout">
     <section class="panel form-panel">
-      <div class="section-head">
+      <div class="section-head compact compact-form-head">
         <div>
-          <p class="eyebrow">Въвеждане</p>
-          <h2 id="formTitle">Ново зареждане</h2>
+          <p id="formTitle" class="eyebrow">Ново зареждане</p>
         </div>
         <span class="records-pill"><span id="totalRecords">0</span> записа</span>
       </div>
 
       <form id="entryForm" autocomplete="off">
-        <div class="field-grid two">
+        <div class="field-grid two fuel-top-grid">
           <label class="field date-field" id="datePickerWrap">
             <span>Дата</span>
             <div class="date-input-row">
@@ -284,10 +285,10 @@ body.dark-mode .primary:focus-visible,body.dark-mode .ghost:focus-visible,body.d
           <button type="button" class="fuel-option a95" data-type="A95"><span class="icon">A95</span><strong>Бензин</strong><small>А95</small></button>
         </div>
 
-        <div class="field-grid three">
+        <div class="field-grid amount-grid">
           <label class="field"><span>Количество гориво</span><input id="liters" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required><em>литри</em></label>
           <label class="field"><span>Сума</span><input id="total" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required><em>€</em></label>
-          <label class="field readonly"><span>Цена на литър</span><input id="pricePerLiter" type="text" value="—" disabled><em>автоматично</em></label>
+          <label class="field readonly price-field"><span>Цена на литър</span><input id="pricePerLiter" type="text" value="—" disabled><em>автоматично</em></label>
         </div>
 
         <label class="field"><span>Километраж</span><input id="odometer" type="number" inputmode="numeric" min="0" step="1" placeholder="напр. 158430" required><em>текущ километраж при зареждането</em></label>
@@ -397,13 +398,10 @@ body.dark-mode .primary:focus-visible,body.dark-mode .ghost:focus-visible,body.d
   </section>
 
   <section class="panel fuel-price-panel">
-    <div class="section-head compact">
-      <div>
-        <p class="eyebrow">Статистика цена на горива</p>
-        <h2>Средна цена по месеци</h2>
-      </div>
-    </div>
-    <div id="fuelPriceStats" class="fuel-price-table"></div>
+    <details class="fuel-price-dropdown" open>
+      <summary><span class="eyebrow">Статистика цена на горива</span><strong>Средна цена по месеци</strong></summary>
+      <div id="fuelPriceStats" class="fuel-price-table"></div>
+    </details>
     <div class="car-doc-section">
       <div class="section-head compact">
         <div>
@@ -470,6 +468,8 @@ let carDocumentPickerMonth = new Date();
 let repairDraftDate = todayISO();
 let oilEditId = null;
 let repairEditId = null;
+let carProfileOpen = false;
+let carAddOpen = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -1491,8 +1491,7 @@ function renderFuelPriceStats(){
   wrap.innerHTML = `<div class="fuel-price-head"><span>Месец</span><span>LPG / Газ</span><span>A95 / Бензин</span></div>` + rows.map(r => `
     <div class="fuel-price-row">
       <div class="fuel-price-cell month"><strong>${monthShortLabel(r.key)}</strong><small>${monthLabel(r.key)}</small></div>
-      ${fuelPriceCell('LPG', r.LPG)}
-      ${fuelPriceCell('A95', r.A95)}
+      <div class="fuel-price-values">${fuelPriceCell('LPG', r.LPG)}${fuelPriceCell('A95', r.A95)}</div>
     </div>`).join('');
 }
 
@@ -1578,6 +1577,9 @@ function renderCarProfiles(){
   const docGrid = $('carDocumentGrid');
   const current = activeCar();
   if ($('activeCarTitle')) $('activeCarTitle').textContent = current.name;
+  if ($('carProfileToggle')) $('carProfileToggle').setAttribute('aria-expanded', String(carProfileOpen));
+  if ($('carProfileDetails')) $('carProfileDetails').hidden = !carProfileOpen;
+  if ($('carAddRow')) $('carAddRow').hidden = !carAddOpen;
   if (rail) rail.innerHTML = carProfiles.map(c => `<button type="button" class="car-chip ${c.id===activeCarId?'active':''}" data-car-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}</button>`).join('');
   rail?.querySelectorAll('.car-chip').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1757,6 +1759,8 @@ function addCarProfile(){
     activeCarId = car.id;
   }
   if (input) input.value = '';
+  carProfileOpen = true;
+  carAddOpen = false;
   saveAndRender('Автомобилът е запазен.');
 }
 function render(){
@@ -1879,6 +1883,8 @@ async function boot(){
     if (box && !box.contains(evt.target)) closeDatePicker();
   });
   $('clearBtn').addEventListener('click', clearForm);
+  $('carProfileToggle')?.addEventListener('click', () => { carProfileOpen = !carProfileOpen; renderCarProfiles(); });
+  $('carAddToggleBtn')?.addEventListener('click', () => { carProfileOpen = true; carAddOpen = !carAddOpen; renderCarProfiles(); setTimeout(() => $('newCarName')?.focus(), 0); });
   $('addCarBtn')?.addEventListener('click', addCarProfile);
   $('newCarName')?.addEventListener('keydown', (evt) => { if (evt.key === 'Enter') { evt.preventDefault(); addCarProfile(); } });
   $('cancelEditBtn').addEventListener('click', clearForm);
