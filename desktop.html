@@ -259,7 +259,7 @@ body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b12
           <label class="field date-field" id="datePickerWrap">
             <span>Дата</span>
             <div class="date-input-row">
-              <input id="dateDisplay" type="text" inputmode="numeric" placeholder="ДД.ММ.ГГГГ" required>
+              <input id="dateDisplay" type="text" inputmode="numeric" placeholder="ДД.ММ" required>
               <button type="button" class="today-mini" onclick="setDate(todayISO(), true)">Днес</button>
             </div>
             <input id="dateIso" type="hidden">
@@ -506,10 +506,26 @@ function fmtDate(iso){
   const [y,m,d] = iso.split('-');
   return `${d}.${m}.${y}`;
 }
+function fmtShortDate(iso){
+  if(!iso) return "—";
+  const [,m,d] = iso.split('-');
+  return `${d}.${m}`;
+}
 function parseDisplayDate(value){
   const m = String(value || '').trim().match(/^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})$/);
   if (!m) return null;
   const d = Number(m[1]), mo = Number(m[2]), y = Number(m[3]);
+  const dt = new Date(y, mo-1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo-1 || dt.getDate() !== d) return null;
+  return `${y}-${pad(mo)}-${pad(d)}`;
+}
+function parseFuelEntryDate(value){
+  const full = parseDisplayDate(value);
+  if (full) return full;
+  const m = String(value || '').trim().match(/^(\d{1,2})[\.\/\-](\d{1,2})$/);
+  if (!m) return null;
+  const base = parseISO($('dateIso')?.value || selectedMonth + '-01');
+  const d = Number(m[1]), mo = Number(m[2]), y = base.getFullYear();
   const dt = new Date(y, mo-1, d);
   if (dt.getFullYear() !== y || dt.getMonth() !== mo-1 || dt.getDate() !== d) return null;
   return `${y}-${pad(mo)}-${pad(d)}`;
@@ -903,12 +919,12 @@ function updatePrice(){
 }
 function setDate(iso, shouldRenderPicker=true){
   $('dateIso').value = iso;
-  $('dateDisplay').value = fmtDate(iso);
+  $('dateDisplay').value = fmtShortDate(iso);
   pickerMonth = parseISO(iso);
   if (shouldRenderPicker) renderDatePicker();
 }
 function getFormDate(){
-  const typed = parseDisplayDate($('dateDisplay').value);
+  const typed = parseFuelEntryDate($('dateDisplay').value);
   if (typed) {
     $('dateIso').value = typed;
     return typed;
@@ -1871,7 +1887,7 @@ async function boot(){
   $('dateDisplay').addEventListener('click', openDatePicker);
   $('dateDisplay').addEventListener('focus', openDatePicker);
   $('dateDisplay').addEventListener('change', () => {
-    const parsed = parseDisplayDate($('dateDisplay').value);
+    const parsed = parseFuelEntryDate($('dateDisplay').value);
     if (parsed) setDate(parsed, true);
   });
   $('pickerPrev').addEventListener('click', () => shiftPickerMonth(-1));
