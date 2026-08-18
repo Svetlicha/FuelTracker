@@ -224,8 +224,8 @@ body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b12
     <button id="themeToggleBtn" class="theme-toggle" type="button" aria-label="Dark mode" title="Dark mode">☾</button>
     <h1>FUEL TRACKER</h1>
     <div class="hero-actions">
-      <button id="driveToggleBtn" class="drive-toggle" type="button" aria-expanded="false"><svg class="drive-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#1e8e3e" d="M17.2 6h13.6l15 26H32.2z"/><path fill="#fbbc04" d="M17.2 6 2.2 32h13.6l15-26z"/><path fill="#4285f4" d="M15.8 32h30L39 42H9z"/></svg><span>Google Drive<small id="driveQuickStatus">не е настроен</small></span></button>
-      <div id="driveIconStatus" class="drive-icon-status neutral" title="Статус на Google Drive синхронизацията">Drive</div>
+      <button id="driveToggleBtn" class="drive-toggle" type="button" aria-expanded="false"><svg class="drive-svg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#3ecf8e" d="M24 4 5 16v16l19 12 19-12V16z"/><path fill="#0f172a" opacity=".25" d="M24 4v40l19-12V16z"/></svg><span>Supabase<small id="driveQuickStatus">не е настроен</small></span></button>
+      <div id="driveIconStatus" class="drive-icon-status neutral" title="Статус на Supabase синхронизацията">DB</div>
     </div>
   </header>
   <div id="carAlertBar" class="car-alert-bar"></div>
@@ -356,30 +356,30 @@ body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b12
   <section id="drivePanel" class="panel drive-panel" aria-hidden="true">
     <div class="section-head compact">
       <div>
-        <p class="eyebrow">Google Drive JSON</p>
+        <p class="eyebrow">Supabase база</p>
         <h2>Синхронизация</h2>
       </div>
       <div class="drive-header-actions">
-        <span id="driveConfigBadge" class="records-pill">Drive: не е настроен</span>
+        <span id="driveConfigBadge" class="records-pill">Supabase: не е настроен</span>
         <button id="closeDrivePanelBtn" class="ghost small" type="button">Скрий</button>
       </div>
     </div>
     <div class="drive-grid">
-      <label class="field"><span>Google Apps Script Web App URL</span><input id="driveUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec"><em>Използвай Web App URL, който завършва на <strong>/exec</strong>. Ако URL е вграден в HTML кода, полето ще бъде само информативно.</em></label>
+      <label class="field"><span>Supabase Project URL</span><input id="driveUrl" type="url" placeholder="https://project-ref.supabase.co"><em>URL адресът е вграден в приложението. Данните се пазят в таблица <strong>fuel_tracker_snapshots</strong>.</em></label>
       <div class="drive-options">
-        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Синхронизацията е винаги включена</strong><br><small>При отваряне зарежда от Google Drive, а при всяка промяна записва автоматично.</small></div></div>
-        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Съвместим режим е включен</strong><br><small>Помага при “Failed to fetch”, особено на телефон.</small></div></div>
-        <div class="compat-note">Трябва само да има валиден Apps Script Web App URL. Данните пак се пазят и локално като резервно копие.</div>
+        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Синхронизацията е винаги включена</strong><br><small>При отваряне зарежда от Supabase, а при всяка промяна записва автоматично.</small></div></div>
+        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Локално резервно копие</strong><br><small>Ако няма интернет или таблицата липсва, приложението продължава да пази данните локално.</small></div></div>
+        <div class="compat-note">Ако Supabase върне PGRST205, стартирай SQL файла <strong>supabase_schema.sql</strong> в SQL Editor.</div>
       </div>
     </div>
     <div class="button-row wrap">
-      <button id="saveDriveSettingsBtn" class="primary" type="button">Запази Drive URL</button>
-      <button id="saveDriveBtn" class="ghost" type="button">Запиши сега в Drive</button>
-      <button id="loadDriveBtn" class="ghost" type="button">Зареди от Drive</button>
+      <button id="saveDriveSettingsBtn" class="primary" type="button">Запази Supabase</button>
+      <button id="saveDriveBtn" class="ghost" type="button">Запиши сега</button>
+      <button id="loadDriveBtn" class="ghost" type="button">Зареди</button>
       <button id="logoutBtn" class="danger" type="button">Изход</button>
     </div>
-    <p id="syncStatus" class="sync-status">Google Drive синхронизацията е винаги включена, когато има въведен или вграден Web App URL.</p>
-    <div class="sync-help"><strong>Ако пак виждаш “Failed to fetch”:</strong> провери дали Apps Script е Deploy → Web app, “Execute as: Me”, “Who has access: Anyone with the link”, и дали URL адресът е новият <strong>/exec</strong> адрес, не <strong>/dev</strong>.</div>
+    <p id="syncStatus" class="sync-status">Supabase синхронизацията е винаги включена, когато таблицата е създадена.</p>
+    <div class="sync-help"><strong>Ако видиш “таблицата липсва”:</strong> отвори Supabase → SQL Editor и стартирай съдържанието на <strong>supabase_schema.sql</strong> от проекта.</div>
   </section>
 
   <section class="panel entries-panel">
@@ -433,10 +433,10 @@ const AUTH_SESSION_KEY = "fuel_tracker_auth_session_v22";
 const LOGIN_LAST_USER_KEY = "fuel_tracker_login_last_user_v22";
 const APP_LOGIN_USERNAME = "Svetlicha";
 const APP_LOGIN_PASSWORD = "svetliN88";
-// По желание можеш да поставиш тук твоя Apps Script Web App URL (/exec), за да бъде вграден в HTML файла.
-// Ако остане празно, приложението ще използва URL адреса, записан от Google Drive панела.
-const EMBEDDED_DRIVE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzwqd8DU2e2ThyD3d-HOQPsk1LDzomHs42Mtfht-8T5SJZEbIdWa_iwjDgSzwDOjo17/exec";
-const DRIVE_SYNC_ALWAYS_ON = true;
+const SUPABASE_URL = "https://fftttgctstauswnfqxyp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_gHUNLLN-MpNgfZgHkIJI2A_IOLTmxfO";
+const SUPABASE_TABLE = "fuel_tracker_snapshots";
+const SUPABASE_ROW_ID = "default";
 const BG_MONTHS = ["Януари","Февруари","Март","Април","Май","Юни","Юли","Август","Септември","Октомври","Ноември","Декември"];
 const BG_MONTHS_SHORT = ["Ян","Фев","Мар","Апр","Май","Юни","Юли","Авг","Сеп","Окт","Ное","Дек"];
 const WEEK_DAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
@@ -460,7 +460,7 @@ let carProfiles = [{ id: DEFAULT_CAR_ID, name: DEFAULT_CAR_NAME, createdAt: new 
 let activeCarId = DEFAULT_CAR_ID;
 let editingId = null;
 let pickerMonth = new Date();
-let settings = { driveUrl: EMBEDDED_DRIVE_WEB_APP_URL, autoSync: true, preferRemoteOnStart: true, driveCompatibilityMode: true };
+let settings = { supabaseUrl: SUPABASE_URL, supabaseKey: SUPABASE_KEY, autoSync: true, preferRemoteOnStart: true };
 let syncTimer = null;
 let appBooted = false;
 let activeCarDocumentKey = null;
@@ -775,10 +775,10 @@ function loadLocal(){
   entries = entries.map(normalizeEntry).filter(Boolean);
   try { settings = { ...settings, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')) }; }
   catch(e){}
-  if (String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim()) settings.driveUrl = String(EMBEDDED_DRIVE_WEB_APP_URL).trim();
+  if (String(SUPABASE_URL || '').trim()) settings.supabaseUrl = String(SUPABASE_URL).trim();
+  if (String(SUPABASE_KEY || '').trim()) settings.supabaseKey = String(SUPABASE_KEY).trim();
   settings.autoSync = true;
   settings.preferRemoteOnStart = true;
-  settings.driveCompatibilityMode = true;
 }
 function saveLocal(){
   ensureDefaultCar();
@@ -1122,14 +1122,14 @@ function shortDriveStatus(text, type=''){
   if (type === 'busy') return '...';
   if (type === 'warn') return raw ? raw.replace(/^Предупреждение:\s*/i,'').slice(0, 80) : 'Внимание';
   if (type === 'error') return raw ? raw.slice(0, 90) : 'Грешка';
-  return getDriveUrl() ? 'Drive' : 'OFF';
+  return getSupabaseUrl() ? 'DB' : 'OFF';
 }
 function setDriveIconStatus(text, type=''){
   const iconStatus = $('driveIconStatus');
   if (!iconStatus) return;
   const safeType = type || 'neutral';
   iconStatus.textContent = shortDriveStatus(text, type);
-  iconStatus.title = String(text || 'Статус на Google Drive синхронизацията');
+  iconStatus.title = String(text || 'Статус на Supabase синхронизацията');
   iconStatus.className = `drive-icon-status ${safeType}`.trim();
 }
 function setSyncStatus(text, type=''){
@@ -1140,30 +1140,39 @@ function setSyncStatus(text, type=''){
   }
   const quick = $('driveQuickStatus');
   if (quick && text) {
-    quick.textContent = type === 'ok' ? 'OK' : (type === 'error' ? 'грешка' : (type === 'busy' ? 'запис...' : (getDriveUrl() ? 'настроен' : 'не е настроен')));
+    quick.textContent = type === 'ok' ? 'OK' : (type === 'error' ? 'грешка' : (type === 'busy' ? 'запис...' : (getSupabaseUrl() ? 'настроен' : 'не е настроен')));
   }
   setDriveIconStatus(text, type);
 }
-function getDriveUrl(){
-  return String((EMBEDDED_DRIVE_WEB_APP_URL || settings.driveUrl || '')).trim();
+function getSupabaseUrl(){
+  return String((SUPABASE_URL || settings.supabaseUrl || '')).trim().replace(/\/rest\/v1\/?$/,'').replace(/\/$/,'');
+}
+function getSupabaseKey(){
+  return String(SUPABASE_KEY || settings.supabaseKey || '').trim();
+}
+function supabaseEndpoint(query=''){
+  return `${getSupabaseUrl()}/rest/v1/${SUPABASE_TABLE}${query}`;
+}
+function supabaseHeaders(extra={}){
+  const key = getSupabaseKey();
+  return { apikey:key, Authorization:`Bearer ${key}`, ...extra };
 }
 function updateDriveUI(){
-  const url = getDriveUrl();
+  const url = getSupabaseUrl();
   if ($('driveUrl')) {
-    $('driveUrl').value = url || settings.driveUrl || '';
-    $('driveUrl').readOnly = !!String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim();
-    $('driveUrl').title = $('driveUrl').readOnly ? 'URL адресът е вграден в HTML кода.' : '';
+    $('driveUrl').value = url || settings.supabaseUrl || '';
+    $('driveUrl').readOnly = !!String(SUPABASE_URL || '').trim();
+    $('driveUrl').title = $('driveUrl').readOnly ? 'Supabase URL адресът е вграден в HTML кода.' : '';
   }
   settings.autoSync = true;
   settings.preferRemoteOnStart = true;
-  settings.driveCompatibilityMode = true;
   if ($('driveConfigBadge')) {
-    $('driveConfigBadge').textContent = url ? 'Drive: включен' : 'Drive: не е настроен';
+    $('driveConfigBadge').textContent = url ? 'Supabase: включен' : 'Supabase: не е настроен';
     $('driveConfigBadge').className = url ? 'records-pill sync-on' : 'records-pill';
   }
   if ($('driveQuickStatus')) $('driveQuickStatus').textContent = url ? 'настроен' : 'не е настроен';
   if ($('driveToggleBtn')) $('driveToggleBtn').classList.toggle('connected', !!url);
-  setDriveIconStatus(url ? 'Google Drive е настроен.' : 'Google Drive не е настроен.', url ? 'neutral' : 'warn');
+  setDriveIconStatus(url ? 'Supabase е настроен.' : 'Supabase не е настроен.', url ? 'neutral' : 'warn');
 }
 function openDrivePanel(scroll=true){
   const panel = $('drivePanel');
@@ -1188,160 +1197,77 @@ function toggleDrivePanel(){
   panel.classList.contains('open') ? closeDrivePanel() : openDrivePanel(true);
 }
 function saveDriveSettings(){
-  if (!String(EMBEDDED_DRIVE_WEB_APP_URL || '').trim()) settings.driveUrl = $('driveUrl').value.trim();
+  if (!String(SUPABASE_URL || '').trim()) settings.supabaseUrl = $('driveUrl').value.trim().replace(/\/rest\/v1\/?$/,'').replace(/\/$/,'');
+  if (!String(SUPABASE_KEY || '').trim()) settings.supabaseKey = getSupabaseKey();
   settings.autoSync = true;
   settings.preferRemoteOnStart = true;
-  settings.driveCompatibilityMode = true;
   saveSettings();
   updateDriveUI();
-  setSyncStatus(getDriveUrl() ? 'Drive URL е запазен. Автоматичната синхронизация е включена постоянно.' : 'Няма Drive URL. Данните се пазят локално, докато не добавиш /exec адрес.', getDriveUrl() ? 'ok' : 'warn');
-  if (getDriveUrl()) saveToDrive(true);
+  setSyncStatus(getSupabaseUrl() ? 'Supabase настройките са запазени. Автоматичната синхронизация е включена.' : 'Няма Supabase URL. Данните се пазят локално.', getSupabaseUrl() ? 'ok' : 'warn');
+  if (getSupabaseUrl()) saveToDrive(true);
 }
-function driveFetchErrorMessage(err){
+function supabaseErrorMessage(err){
   const msg = String(err && err.message ? err.message : err || '');
-  if (/Failed to fetch|NetworkError|Load failed|fetch/i.test(msg)) {
-    return 'Failed to fetch: браузърът блокира връзката към Google Apps Script. Провери Web App deployment-а: Execute as Me, Anyone with the link, и използвай /exec URL. Можеш да оставиш включен “Съвместим режим”.';
-  }
-  return msg || 'Неуспешна връзка с Google Drive.';
+  if (/PGRST205|Could not find the table/i.test(msg)) return 'Supabase таблицата липсва. Стартирай supabase_schema.sql в SQL Editor.';
+  if (/Failed to fetch|NetworkError|Load failed|fetch|abort/i.test(msg)) return 'Неуспешна връзка със Supabase. Данните са запазени локално.';
+  return msg || 'Неуспешна Supabase синхронизация.';
 }
-async function driveRequest(payload){
-  const url = getDriveUrl();
-  if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
-  let res;
+async function supabaseRequest(pathQuery='', options={}){
+  if (!getSupabaseUrl() || !getSupabaseKey()) throw new Error('Липсва Supabase URL или publishable key.');
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 15000);
+  let res;
   try {
-    res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-      redirect: 'follow',
-      signal: controller.signal
-    });
+    res = await fetch(supabaseEndpoint(pathQuery), { ...options, headers: supabaseHeaders(options.headers || {}), signal: controller.signal });
   } catch(err) {
-    const e = new Error(driveFetchErrorMessage(err));
-    e.code = 'FETCH_FAILED';
-    throw e;
+    throw new Error(supabaseErrorMessage(err));
   } finally {
     clearTimeout(timer);
   }
   if (!res.ok) {
-    const e = new Error(`Drive върна HTTP ${res.status}. Превключвам към съвместим режим за Apps Script.`);
-    e.code = 'HTTP_FAILED';
-    e.status = res.status;
-    throw e;
+    const text = await res.text().catch(() => '');
+    throw new Error(text || `Supabase върна HTTP ${res.status}.`);
   }
-  const text = await res.text();
-  let data;
-  try { data = JSON.parse(text); }
-  catch(e){ throw new Error('Drive върна невалиден отговор. Провери дали Apps Script е deploy-нат като Web App и дали не си отворил /dev URL.'); }
-  if (!data.ok) throw new Error(data.error || 'Грешка при синхронизация.');
-  return data;
-}
-async function driveSaveFallback(payload){
-  const url = getDriveUrl();
-  if (!url) throw new Error('Няма въведен или вграден Google Apps Script Web App URL.');
-  return new Promise((resolve) => {
-    const frameName = 'fuelTrackerDriveSaveFrame_' + Date.now() + '_' + Math.floor(Math.random()*100000);
-    const iframe = document.createElement('iframe');
-    const form = document.createElement('form');
-    const input = document.createElement('input');
-    let done = false;
-    function cleanup(){
-      if (done) return;
-      done = true;
-      setTimeout(() => {
-        if (form.parentNode) form.parentNode.removeChild(form);
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 300);
-      resolve({ ok:true, submitted:true });
-    }
-    iframe.name = frameName;
-    iframe.style.display = 'none';
-    form.style.display = 'none';
-    form.method = 'POST';
-    form.action = url;
-    form.target = frameName;
-    input.type = 'hidden';
-    input.name = 'payload';
-    input.value = JSON.stringify(payload);
-    form.appendChild(input);
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-    iframe.addEventListener('load', cleanup, { once:true });
-    form.submit();
-    setTimeout(cleanup, 5000);
-  });
-}
-function driveJsonpLoad(){
-  const url = getDriveUrl();
-  if (!url) return Promise.reject(new Error('Няма въведен или вграден Google Apps Script Web App URL.'));
-  return new Promise((resolve, reject) => {
-    const callbackName = '__fuelTrackerDriveLoad_' + Date.now() + '_' + Math.floor(Math.random()*100000);
-    const sep = url.includes('?') ? '&' : '?';
-    const script = document.createElement('script');
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error('Drive не отговори при резервното зареждане. Провери Apps Script deployment-а.'));
-    }, 15000);
-    function cleanup(){
-      clearTimeout(timer);
-      try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-    window[callbackName] = (data) => { cleanup(); resolve(data); };
-    script.onerror = () => { cleanup(); reject(new Error('Резервното зареждане от Drive беше блокирано. Провери дали URL е публичен /exec Web App.')); };
-    script.src = `${url}${sep}action=load&callback=${encodeURIComponent(callbackName)}&t=${Date.now()}`;
-    document.head.appendChild(script);
-  });
+  if (res.status === 204) return null;
+  return res.json();
 }
 async function saveToDrive(manual=false){
-  if (!getDriveUrl()) {
-    if (manual) { openDrivePanel(true); setSyncStatus('Първо въведи или вгради Google Apps Script Web App URL.', 'warn'); }
+  if (!getSupabaseUrl() || !getSupabaseKey()) {
+    if (manual) { openDrivePanel(true); setSyncStatus('Липсва Supabase URL или publishable key.', 'warn'); }
     return;
   }
-  const payload = { action:'save', data: dataPayload() };
+  const row = { id: SUPABASE_ROW_ID, payload: dataPayload(), updated_at: new Date().toISOString() };
   try {
-    setSyncStatus('Записване в Google Drive...', 'busy');
-    await driveRequest(payload);
-    setSyncStatus(`Запазено в Google Drive: ${new Date().toLocaleTimeString('bg-BG', {hour:'2-digit', minute:'2-digit'})}`, 'ok');
+    setSyncStatus('Записване в Supabase...', 'busy');
+    await supabaseRequest('', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(row)
+    });
+    setSyncStatus(`Запазено в Supabase: ${new Date().toLocaleTimeString('bg-BG', {hour:'2-digit', minute:'2-digit'})}`, 'ok');
   } catch(err) {
-    const canFallback = (err && (err.code === 'FETCH_FAILED' || err.code === 'HTTP_FAILED')) && settings.driveCompatibilityMode !== false;
-    if (canFallback) {
-      try {
-        setSyncStatus('Нормалният запис беше блокиран. Опитвам съвместим режим...', 'warn');
-        await driveSaveFallback(payload);
-        setSyncStatus('Записът е изпратен към Google Drive в съвместим режим.', 'ok');
-        return;
-      } catch(fallbackErr) {
-        openDrivePanel(true);
-        setSyncStatus(driveFetchErrorMessage(fallbackErr), 'error');
-        return;
-      }
-    }
     openDrivePanel(true);
-    setSyncStatus(driveFetchErrorMessage(err), 'error');
+    setSyncStatus(supabaseErrorMessage(err), 'error');
   }
 }
 async function loadFromDrive(manual=false){
-  if (!getDriveUrl()) {
-    if (manual) { openDrivePanel(true); setSyncStatus('Първо въведи или вгради Google Apps Script Web App URL.', 'warn'); }
+  if (!getSupabaseUrl() || !getSupabaseKey()) {
+    if (manual) { openDrivePanel(true); setSyncStatus('Липсва Supabase URL или publishable key.', 'warn'); }
     return;
   }
   try {
-    setSyncStatus('Зареждане от Google Drive...', 'busy');
-    let res;
-    try {
-      res = await driveRequest({ action:'load' });
-    } catch(err) {
-      if (err && (err.code === 'FETCH_FAILED' || err.code === 'HTTP_FAILED')) {
-        setSyncStatus('Нормалното зареждане беше блокирано. Опитвам резервно зареждане...', 'warn');
-        res = await driveJsonpLoad();
+    setSyncStatus('Зареждане от Supabase...', 'busy');
+    const rows = await supabaseRequest(`?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=payload&limit=1`, { method:'GET' });
+    if (!Array.isArray(rows) || !rows[0]) {
+      if (entries.length || carProfiles.length) {
+        await saveToDrive(false);
+        setSyncStatus(`Мигрирано към Supabase: ${entries.length} записа`, 'ok');
       } else {
-        throw err;
+        setSyncStatus('Supabase е празен. Няма локални записи за миграция.', 'ok');
       }
+      return;
     }
-    const remoteData = res.data || res;
+    const remoteData = rows[0].payload;
     const remoteEntries = normalizeDataPayload(remoteData);
     if (remoteEntries.length || manual) {
       applyCarProfilesPayload(remoteData);
@@ -1352,14 +1278,14 @@ async function loadFromDrive(manual=false){
       saveLocal();
       render();
     }
-    setSyncStatus(`Заредено от Google Drive: ${remoteEntries.length} записа`, 'ok');
+    setSyncStatus(`Заредено от Supabase: ${remoteEntries.length} записа`, 'ok');
   } catch(err) {
     openDrivePanel(true);
-    setSyncStatus(driveFetchErrorMessage(err) || 'Неуспешно зареждане от Google Drive.', 'error');
+    setSyncStatus(supabaseErrorMessage(err) || 'Неуспешно зареждане от Supabase.', 'error');
   }
 }
 function scheduleDriveSave(){
-  if (!getDriveUrl()) return;
+  if (!getSupabaseUrl() || !getSupabaseKey()) return;
   clearTimeout(syncTimer);
   syncTimer = setTimeout(() => saveToDrive(false), 700);
 }
@@ -1919,7 +1845,7 @@ async function boot(){
   $('nextCalendarMonth').addEventListener('click', () => shiftSelectedMonth(1));
   document.querySelectorAll('.fuel-option').forEach(btn => btn.addEventListener('click', () => setFuelType(btn.dataset.type)));
   render();
-  if (getDriveUrl()) await loadFromDrive(false);
+  if (getSupabaseUrl() && getSupabaseKey()) await loadFromDrive(false);
 }
 
 document.addEventListener('DOMContentLoaded', initAuth);
