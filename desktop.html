@@ -372,8 +372,8 @@ body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b12
       <label class="field"><span>Supabase Project URL</span><input id="driveUrl" type="url" placeholder="https://project-ref.supabase.co"><em>URL адресът е вграден в приложението. Данните се пазят в таблица <strong>fuel_tracker_snapshots</strong>.</em></label>
       <div class="drive-options">
         <div class="check-row"><span class="sync-icon">✓</span><div><strong>Синхронизацията е винаги включена</strong><br><small>При отваряне зарежда от Supabase, а при всяка промяна записва автоматично.</small></div></div>
-        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Локално резервно копие</strong><br><small>Ако няма интернет или таблицата липсва, приложението продължава да пази данните локално.</small></div></div>
-        <div class="compat-note">Ако Supabase върне PGRST205, стартирай SQL файла <strong>supabase_schema.sql</strong> в SQL Editor.</div>
+        <div class="check-row"><span class="sync-icon">✓</span><div><strong>Локално резервно копие</strong><br><small>Ако няма интернет, приложението продължава да пази данните локално.</small></div></div>
+        <div class="compat-note">Данните вече се синхронизират със Supabase и остават налични локално като резервно копие.</div>
       </div>
     </div>
     <div class="button-row wrap">
@@ -382,8 +382,8 @@ body.dark-mode .car-title-button,body.dark-mode .fuel-price-row{background:#0b12
       <button id="loadDriveBtn" class="ghost" type="button">Зареди</button>
       <button id="logoutBtn" class="danger" type="button">Изход</button>
     </div>
-    <p id="syncStatus" class="sync-status">Supabase синхронизацията е винаги включена, когато таблицата е създадена.</p>
-    <div class="sync-help"><strong>Ако видиш “таблицата липсва”:</strong> отвори Supabase → SQL Editor и стартирай съдържанието на <strong>supabase_schema.sql</strong> от проекта.</div>
+    <p id="syncStatus" class="sync-status">Supabase синхронизацията е включена.</p>
+    <div class="sync-help"><strong>Supabase:</strong> данните се записват автоматично при всяка промяна и се пазят локално като резервно копие.</div>
   </section>
 
   <section class="panel entries-panel">
